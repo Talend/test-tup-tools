@@ -16,11 +16,9 @@ import constant.Constants;
 
 public class CommUtil {
 	
-	static String rootFolerStr = "\\\\192.168.30.10\\nightly";
-	//V7.2.1
-	//V7.2.1SNAPSHOT_20190329_1937
-	final static String keyContains = "V7.2.1";
-	static String licenseKey = "30days_5users";
+	static String nightlyFolerStr = System.getProperty("nightlyFolerStr");
+	final static String keyContains = System.getProperty("keyContains");
+	static String licenseKey = System.getProperty("licenseKey");
 	public static String latstBuldRtFlderNm; 
 	
 	/**
@@ -29,7 +27,7 @@ public class CommUtil {
 	 * @author kwang
 	 */
 	public static String getLatstBuldRtFlderStr() {
-		File[] buildRootFolers = getFilesWithContainFilter(new File(rootFolerStr), keyContains);
+		File[] buildRootFolers = getFilesWithContainFilter(new File(nightlyFolerStr), keyContains);
 		List<String> timeStampList = new ArrayList<String>();
 		Map<String, File> timeStampMap = new HashMap<String, File>();
 		for(File file:buildRootFolers) {
@@ -57,7 +55,7 @@ public class CommUtil {
 			File[] licenseFiles = getFilesWithContainFilter(licenseFolder, licenseKey);
 			latstLicense = licenseFiles[0];
 		} else {
-			String licenseTempFolderStr = rootFolerStr + File.separator + Constants.LICENSE_TEMP + File.separator + keyContains.replace("V", "");
+			String licenseTempFolderStr = nightlyFolerStr + File.separator + Constants.LICENSE_TEMP + File.separator + keyContains.replace("V", "");
 			File[] licenseFiles = getFilesWithContainFilter(new File(licenseTempFolderStr), licenseKey);
 			List<File> licenseFilesList = Arrays.asList(licenseFiles);
 			latstLicense = getLatestFilAfterSort(licenseFilesList);
@@ -102,6 +100,9 @@ public class CommUtil {
 	 */
 	public static String copyBuild(File srcFile, String destFileStr) throws IOException {
 		String nameStr = srcFile.getName();
+		if(nameStr.endsWith(Constants.LICENSE_SUFFIX)) {
+			nameStr = Constants.LICENSE_INSTUDIO;
+		}
 		destFileStr = destFileStr + File.separator + nameStr;
 		File destFile = new File(destFileStr);
 		FileUtils.copyFile(srcFile, destFile);
@@ -109,31 +110,33 @@ public class CommUtil {
 	}
 	
 	/**
-     * Extracts a zip file to a directory specified by destDirectory
+     * Extracts a zip file to a directory specified by destDir
      * @param zipFilePath
-     * @param destDirectory
-     * @throws IOException
+     * @param destDir
      */
     public static void unzip(String zipFilePath, String destDir) {
 	    	File destFile = new File(destDir);
 			if(!destFile.exists()) {
 				destFile.mkdirs();
 			}
-			Runtime runtime = Runtime.getRuntime();
-			Process process = null;
-			try {
-				process = runtime.exec("cmd /c jar -xf " + zipFilePath, null, destFile);
-				process.waitFor();
-			} catch (IOException e) {
-				System.err.println("!!!!!!! unzip file failed: " + zipFilePath);
-				e.printStackTrace(System.err);
-			} catch (InterruptedException e) {
-				System.err.println("!!!!!!! unzip file failed: " + zipFilePath);
-				e.printStackTrace(System.err);
-			} finally {
-				process.destroyForcibly();
-			}
+			String commandStr =  "cmd /c jar -xf " + zipFilePath;
+			runCommand(commandStr, destFile);
     }
+    
+    public static void runCommand(String commandStr, File destFile) {
+    	Runtime runtime = Runtime.getRuntime();
+		Process process = null;
+		try {
+			process = runtime.exec(commandStr, null, destFile);
+			process.waitFor();
+		} catch (IOException e) {
+			e.printStackTrace(System.err);
+		} catch (InterruptedException e) {
+			e.printStackTrace(System.err);
+		} finally {
+			process.destroyForcibly();
+		}
+	}
     
 	public static File[] getFilesWithContainFilter(File file, final String filter) {
 		File[] files = file.listFiles(new FileFilter() {
