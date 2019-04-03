@@ -11,6 +11,8 @@ public class Constants {
 	public final static String STUDIO_EXE = "Talend-Studio-win-x86_64.exe";
 	public final static String P2_PREFIX = "P2s-In-";
 	
+	public final static String TAC_PREFIX = "Talend-AdministrationCenter";
+
 	/**
 	 * used by get license
 	 */

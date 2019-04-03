@@ -56,6 +56,10 @@
 	              <key>smbDestFolderStr</key>
 	              <value>${smbDestFolderStr}</value>
 	            </systemProperty>
+	            <systemProperty>
+	              <key>isNeedTAC</key>
+	              <value>${isNeedTAC}</value>
+	            </systemProperty>
 	          </systemProperties>
         	</configuration>
       	</plugin>

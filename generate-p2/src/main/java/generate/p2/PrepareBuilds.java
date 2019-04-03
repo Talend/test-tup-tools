@@ -70,5 +70,12 @@ public class PrepareBuilds {
 		File p2SrcFileStr = CommUtil.getFilesWithStartEndFilter(localDestFile, Constants.P2_PREFIX, "");
 		CommUtil.copyBuild(p2SrcFileStr, smbDestFolderStr);
 		System.err.println("upload p2 done");
+		
+		// copy tac
+		if(Boolean.getBoolean("isNeedTAC")) {
+			File latstTACFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL, Constants.TAC_PREFIX, Constants.ZIP_SUFFIX);
+			CommUtil.copyBuild(latstTACFile, smbDestFolderStr);
+			System.err.println("upload tac done");
+		}
 	}
 }
