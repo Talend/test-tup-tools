@@ -3,8 +3,6 @@ package generate.p2;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
-
 import constant.Constants;
 import util.CommUtil;
 
@@ -13,7 +11,10 @@ public class PrepareBuilds {
 	static String licensePrefix = System.getProperty("licensePrefix");
 	static String smbDestFolderStr = System.getProperty("smbDestFolderStr");
 	
-	@Test
+	public static void main(String[] args) throws IOException {
+		new PrepareBuilds().generatP2();
+	}
+	
 	public void generatP2() throws IOException {
 		// get latest build folder
 		String latstBuldRtFlderStr = CommUtil.getLatstBuldRtFlderStr();
