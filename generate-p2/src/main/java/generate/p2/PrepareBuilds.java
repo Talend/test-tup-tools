@@ -62,7 +62,7 @@ public class PrepareBuilds {
 		// zip p2
 		File localDestFile = new File(localDestFileStr);
 		String studioFolderNameStr = latstStudioFile.getName();
-		String zipCommStr = "jar -cf " + Constants.P2_PREFIX + studioFolderNameStr + " " + studioFolderStr;
+		String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + " " + studioFolderNameStr.replace(".zip", "");
 		CommUtil.runCommand(zipCommStr, localDestFile);
 		System.err.println("zip p2 done");
 		
