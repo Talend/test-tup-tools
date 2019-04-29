@@ -77,5 +77,17 @@ public class PrepareBuilds {
 			CommUtil.copyBuild(latstTACFile, smbDestFolderStr);
 			System.err.println("upload tac done");
 		}
+		
+		// copy studio
+		if(Boolean.getBoolean("isNeedStudio")) {
+			CommUtil.copyBuild(latstStudioFile, smbDestFolderStr);
+			System.err.println("upload studio done");
+		}
+		
+		// copy License
+		if (Boolean.getBoolean("isNeedLicense")) {
+			CommUtil.copyBuild(latstLicense, smbDestFolderStr);
+			System.err.println("upload License done");
+		}
 	}
 }
