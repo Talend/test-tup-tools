@@ -36,7 +36,27 @@ public class PrepareBuilds {
 		String destStudioFileStr = CommUtil.copyBuild(latstStudioFile, localDestFileStr);
 		CommUtil.unzip(destStudioFileStr, localDestFileStr);
 		System.err.println("unzip studio done: " + destStudioFileStr);
-		
+
+		// copy studio
+		if (Boolean.getBoolean("isNeedStudio")) {
+			try {
+				CommUtil.copyBuild(latstStudioFile, smbDestFolderStr);
+				System.err.println("upload studio done");
+			} catch (Exception e1) {
+				System.err.println("upload studio failed");
+			}
+		}
+
+		// copy License
+		if (Boolean.getBoolean("isNeedLicense")) {
+			try {
+				CommUtil.copyBuild(latstLicense, smbDestFolderStr);
+				System.err.println("upload License done");
+			} catch (Exception e1) {
+				System.err.println("upload License failed");
+			}
+		}
+
 		// get swtbotP2
 		String swtFolderStr =  latstBuldRtFlderStr + File.separator + Constants.SWT;
 		File latstSwtbotP2File = CommUtil.getLatstBuildFile(swtFolderStr, Constants.SWT_PREFIX, "", "", Constants.ZIP_SUFFIX);
@@ -82,16 +102,6 @@ public class PrepareBuilds {
 			}
 		}
 		
-		// copy studio
-		if(Boolean.getBoolean("isNeedStudio")) {
-			CommUtil.copyBuild(latstStudioFile, smbDestFolderStr);
-			System.err.println("upload studio done");
-		}
 		
-		// copy License
-		if (Boolean.getBoolean("isNeedLicense")) {
-			CommUtil.copyBuild(latstLicense, smbDestFolderStr);
-			System.err.println("upload License done");
-		}
 	}
 }
