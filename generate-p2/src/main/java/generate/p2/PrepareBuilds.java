@@ -73,9 +73,13 @@ public class PrepareBuilds {
 		
 		// copy tac
 		if(Boolean.getBoolean("isNeedTAC")) {
-			File latstTACFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL, Constants.TAC_PREFIX, Constants.ZIP_SUFFIX);
-			CommUtil.copyBuild(latstTACFile, smbDestFolderStr);
-			System.err.println("upload tac done");
+			try {
+				File latstTACFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL, Constants.TAC_PREFIX, Constants.ZIP_SUFFIX);
+				CommUtil.copyBuild(latstTACFile, smbDestFolderStr);
+				System.err.println("upload tac done");
+			} catch (Exception e1) {
+				System.err.println("upload tac failed");
+			}
 		}
 		
 		// copy studio
