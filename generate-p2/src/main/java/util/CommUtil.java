@@ -53,11 +53,11 @@ public class CommUtil {
 		File licenseFolder = new File(licenseFolerStr);
 		File latstLicense;
 		if(licenseFolder.exists() && licenseFolder.isDirectory()) {
-			File[] licenseFiles = getFilesWithContainFilter(licenseFolder, mixedLicenseKey);
+			File[] licenseFiles = getFilesWithContainFilter(licenseFolder, licenseKey);
 			latstLicense = licenseFiles[0];
 		} else {
 			String licenseTempFolderStr = nightlyFolerStr + File.separator + Constants.LICENSE_TEMP + File.separator + keyContains.replace("V", "");
-			File[] licenseFiles = getFilesWithContainFilter(new File(licenseTempFolderStr), mixedLicenseKey);
+			File[] licenseFiles = getFilesWithContainFilter(new File(licenseTempFolderStr), licenseKey);
 			List<File> licenseFilesList = Arrays.asList(licenseFiles);
 			latstLicense = getLatestFilAfterSort(licenseFilesList);
 		}
@@ -75,11 +75,11 @@ public class CommUtil {
 		File licenseFolder = new File(licenseFolerStr);
 		File latstLicense;
 		if(licenseFolder.exists() && licenseFolder.isDirectory()) {
-			File[] licenseFiles = getFilesWithContainFilter(licenseFolder, licenseKey);
+			File[] licenseFiles = getFilesWithContainFilter(licenseFolder, mixedLicenseKey);
 			latstLicense = licenseFiles[0];
 		} else {
 			String licenseTempFolderStr = nightlyFolerStr + File.separator + Constants.LICENSE_TEMP + File.separator + keyContains.replace("V", "");
-			File[] licenseFiles = getFilesWithContainFilter(new File(licenseTempFolderStr), licenseKey);
+			File[] licenseFiles = getFilesWithContainFilter(new File(licenseTempFolderStr), mixedLicenseKey);
 			List<File> licenseFilesList = Arrays.asList(licenseFiles);
 			latstLicense = getLatestFilAfterSort(licenseFilesList);
 		}
