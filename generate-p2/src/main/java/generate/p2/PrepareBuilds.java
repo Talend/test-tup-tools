@@ -29,15 +29,13 @@ public class PrepareBuilds {
 		CommUtil.unzip(destLicenseFileStr, localDestFileStr);
 		System.err.println("unzip license done: " + destLicenseFileStr);
 		
+		// get mixed license
+		File latstMixedLicense = CommUtil.getLatstMixedLicenseFile(latstBuldRtFlderStr);
+				
 		// get studio
 		String allFolerStr =  latstBuldRtFlderStr + File.separator + Constants.ALL;
 		File latstStudioFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL, Constants.STUDIO_PREFIX, Constants.ZIP_SUFFIX);
-		System.err.println("latest studio: " + latstStudioFile);
-		String destStudioFileStr = CommUtil.copyBuild(latstStudioFile, localDestFileStr);
-		CommUtil.unzip(destStudioFileStr, localDestFileStr);
-		System.err.println("unzip studio done: " + destStudioFileStr);
-
-		// copy studio
+		// upload studio
 		if (Boolean.getBoolean("isNeedStudio")) {
 			try {
 				CommUtil.copyBuild(latstStudioFile, smbDestFolderStr);
@@ -47,7 +45,7 @@ public class PrepareBuilds {
 			}
 		}
 
-		// copy License
+		// upload License
 		if (Boolean.getBoolean("isNeedLicense")) {
 			try {
 				CommUtil.copyBuild(latstLicense, smbDestFolderStr);
@@ -56,6 +54,25 @@ public class PrepareBuilds {
 				System.err.println("upload License failed");
 			}
 		}
+
+		// upload mixed License
+		if (Boolean.getBoolean("isNeedLicense")) {
+			try {
+				CommUtil.copyBuild(latstMixedLicense, smbDestFolderStr);
+				System.err.println("upload mixed License done");
+			} catch (Exception e1) {
+				System.err.println("upload mixed License failed");
+			}
+		}
+
+
+		System.err.println("latest studio: " + latstStudioFile);
+		String destStudioFileStr = CommUtil.copyBuild(latstStudioFile, localDestFileStr);
+		CommUtil.unzip(destStudioFileStr, localDestFileStr);
+		System.err.println("unzip studio done: " + destStudioFileStr);
+
+
+		
 
 		// get swtbotP2
 		String swtFolderStr =  latstBuldRtFlderStr + File.separator + Constants.SWT;
@@ -102,6 +119,9 @@ public class PrepareBuilds {
 			}
 		}
 		
+		//clean up locally download folder
+		
+		CommUtil.deleteFolder(localDestFileStr);
 		
 	}
 }

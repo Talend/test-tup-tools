@@ -19,6 +19,7 @@ public class CommUtil {
 	static String nightlyFolerStr = System.getProperty("nightlyFolerStr");
 	final static String keyContains = System.getProperty("keyContains");
 	static String licenseKey = System.getProperty("licenseKey");
+	static String mixedLicenseKey = System.getProperty("mixedLicenseKey");
 	public static String latstBuldRtFlderNm; 
 	
 	/**
@@ -52,6 +53,28 @@ public class CommUtil {
 		File licenseFolder = new File(licenseFolerStr);
 		File latstLicense;
 		if(licenseFolder.exists() && licenseFolder.isDirectory()) {
+			File[] licenseFiles = getFilesWithContainFilter(licenseFolder, mixedLicenseKey);
+			latstLicense = licenseFiles[0];
+		} else {
+			String licenseTempFolderStr = nightlyFolerStr + File.separator + Constants.LICENSE_TEMP + File.separator + keyContains.replace("V", "");
+			File[] licenseFiles = getFilesWithContainFilter(new File(licenseTempFolderStr), mixedLicenseKey);
+			List<File> licenseFilesList = Arrays.asList(licenseFiles);
+			latstLicense = getLatestFilAfterSort(licenseFilesList);
+		}
+		return latstLicense;
+	}
+	
+	/**
+	 * get latest mixed license file
+	 * @param latstBuldRtFlderStr latest build folder string
+	 * @return latest mixed license file
+	 * @author xjguo
+	 */
+	public static File getLatstMixedLicenseFile(String latstBuldRtFlderStr) {
+		String licenseFolerStr =  latstBuldRtFlderStr + File.separator + Constants.LICENSE;
+		File licenseFolder = new File(licenseFolerStr);
+		File latstLicense;
+		if(licenseFolder.exists() && licenseFolder.isDirectory()) {
 			File[] licenseFiles = getFilesWithContainFilter(licenseFolder, licenseKey);
 			latstLicense = licenseFiles[0];
 		} else {
@@ -62,7 +85,6 @@ public class CommUtil {
 		}
 		return latstLicense;
 	}
-	
 	/**
 	 * get latest studio/swtbot_p2 file
 	 * @param latstBuldSubFlderStr
@@ -173,4 +195,27 @@ public class CommUtil {
 		Collections.sort(list);
 		return list.get(size-1);
 	}
+	
+	public static void deleteFolder(String file) {
+		boolean success = deleteDir(new File(file));
+		if (success) {
+			System.err.println("Successfully deleted file: " + file);
+		} else {
+			System.err.println("Failed to delete file: " + file);
+		}
+	}
+
+	private static boolean deleteDir(File dir) {
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			for (int i = 0; i < children.length; i++) {
+				boolean success = deleteDir(new File(dir, children[i]));
+				if (!success) {
+					return false;
+				}
+			}
+		}
+		return dir.delete();
+	}
+	
 }
