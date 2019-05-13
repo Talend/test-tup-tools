@@ -118,7 +118,7 @@ public class PrepareBuilds {
 			e.printStackTrace();
 		} finally {
 			// clean up locally download folder
-			CommUtil.deleteFolder(localDestFileStr);
+			//CommUtil.deleteFolder(localDestFileStr);
 		}
 
 	}
