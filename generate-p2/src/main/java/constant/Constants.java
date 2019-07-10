@@ -12,6 +12,9 @@ public class Constants {
 	public final static String P2_PREFIX = "P2s-In-";
 	
 	public final static String TAC_PREFIX = "Talend-AdministrationCenter";
+	public final static String FullP2_PREFIX = "Talend_Full_Studio_p2";
+	public final static String CIBuilder_PREFIX = "Talend-CI-Builder";
+	public final static String CIFolder = "studio-tools";
 
 	/**
 	 * used by get license
@@ -20,4 +23,5 @@ public class Constants {
 	public final static String LICENSE = "LICENSES";
 	public final static String LICENSE_SUFFIX = ".license";
 	public final static String LICENSE_INSTUDIO = "license";
+	
 }

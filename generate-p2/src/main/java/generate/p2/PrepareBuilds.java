@@ -7,6 +7,7 @@ import constant.Constants;
 import util.CommUtil;
 
 public class PrepareBuilds {
+
 	static String localDestFileStr = System.getProperty("localDestFileStr");
 	static String licensePrefix = System.getProperty("licensePrefix");
 	static String smbDestFolderStr = System.getProperty("smbDestFolderStr");
@@ -34,7 +35,17 @@ public class PrepareBuilds {
 
 		// get studio
 		String allFolerStr = latstBuldRtFlderStr + File.separator + Constants.ALL;
-		File latstStudioFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL, Constants.STUDIO_PREFIX, Constants.ZIP_SUFFIX);
+		File latstStudioFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL,Constants.STUDIO_PREFIX, Constants.ZIP_SUFFIX);
+
+		// get full p2
+		File latstFullP2File = CommUtil.getLatstFullP2BuildFile(allFolerStr, Constants.FullP2_PREFIX,Constants.ZIP_SUFFIX);
+		System.out.println(latstFullP2File.getAbsolutePath());
+
+		// get ci builder
+		String ciFolerStr = latstBuldRtFlderStr + File.separator + Constants.CIFolder;
+		File latstCIBuilderFile = CommUtil.getLatstCIBuildERFile(ciFolerStr, Constants.CIBuilder_PREFIX,Constants.ZIP_SUFFIX);
+		System.out.println(latstCIBuilderFile.getAbsolutePath());
+
 		// upload studio
 		if (Boolean.getBoolean("isNeedStudio")) {
 			try {
@@ -64,6 +75,26 @@ public class PrepareBuilds {
 				System.err.println("upload mixed License failed");
 			}
 		}
+		
+		// upload full p2
+		if (Boolean.getBoolean("isNeedfullP2")) {
+			try {
+				CommUtil.copyBuild(latstFullP2File, System.getProperty("smbDestFolderStr"));
+				System.err.println("upload FullP2 done");
+			} catch (Exception e1) {
+				System.err.println("upload FullP2 failed");
+			}
+		}
+
+		// upload ci builder
+		if (Boolean.getBoolean("isNeedCIBuilder")) {
+			try {
+				CommUtil.copyBuild(latstCIBuilderFile, System.getProperty("smbDestFolderStr"));
+				System.err.println("upload CIBuilder done");
+			} catch (Exception e1) {
+				System.err.println("upload CIBuilder failed");
+			}
+		}
 
 		try {
 			System.err.println("latest studio: " + latstStudioFile);
@@ -73,10 +104,10 @@ public class PrepareBuilds {
 
 			// get swtbotP2
 			String swtFolderStr = latstBuldRtFlderStr + File.separator + Constants.SWT;
-			File latstSwtbotP2File = CommUtil.getLatstBuildFile(swtFolderStr, Constants.SWT_PREFIX, "", "", Constants.ZIP_SUFFIX);
+			File latstSwtbotP2File = CommUtil.getLatstBuildFile(swtFolderStr, Constants.SWT_PREFIX, "", "",Constants.ZIP_SUFFIX);
 			System.err.println("latest swtbotP2: " + latstSwtbotP2File);
 			String destSwtbotP2FileStr = CommUtil.copyBuild(latstSwtbotP2File, localDestFileStr);
-			String swtbotP2FolderString = localDestFileStr + File.separator + latstSwtbotP2File.getName().replace(".zip", "");
+			String swtbotP2FolderString = localDestFileStr + File.separator	+ latstSwtbotP2File.getName().replace(".zip", "");
 			CommUtil.unzip(destSwtbotP2FileStr, swtbotP2FolderString);
 			System.err.println("unzip swtbotP2 done: " + destSwtbotP2FileStr);
 
@@ -88,14 +119,14 @@ public class PrepareBuilds {
 			System.err.println("copy license to studio done");
 
 			// generate p2
-			String commandStr = studioFolderStr + File.separator + Constants.STUDIO_EXE + " -nosplash -consoleLog -application org.eclipse.equinox.p2.director -repository file:///" + swtbotP2FolderString + " -installIU org.talend.swtbot.update.site.feature.feature.group";
+			String commandStr = studioFolderStr + File.separator + Constants.STUDIO_EXE	+ " -nosplash -consoleLog -application org.eclipse.equinox.p2.director -repository file:///" + swtbotP2FolderString + " -installIU org.talend.swtbot.update.site.feature.feature.group";
 			CommUtil.runCommand(commandStr, null);
 			System.err.println("generate p2 done");
 
 			// zip p2
 			File localDestFile = new File(localDestFileStr);
 			String studioFolderNameStr = latstStudioFile.getName();
-			String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + " " + studioFolderNameStr.replace(".zip", "");
+			String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + " "+ studioFolderNameStr.replace(".zip", "");
 			CommUtil.runCommand(zipCommStr, localDestFile);
 			System.err.println("zip p2 done");
 
@@ -107,7 +138,7 @@ public class PrepareBuilds {
 			// copy tac
 			if (Boolean.getBoolean("isNeedTAC")) {
 				try {
-					File latstTACFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL, Constants.TAC_PREFIX, Constants.ZIP_SUFFIX);
+					File latstTACFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL,Constants.TAC_PREFIX, Constants.ZIP_SUFFIX);
 					CommUtil.copyBuild(latstTACFile, smbDestFolderStr);
 					System.err.println("upload tac done");
 				} catch (Exception e1) {
