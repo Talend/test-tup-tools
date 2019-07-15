@@ -14,6 +14,7 @@ public class Constants {
 	public final static String TAC_PREFIX = "Talend-AdministrationCenter";
 	public final static String FullP2_PREFIX = "Talend_Full_Studio_p2";
 	public final static String CIBuilder_PREFIX = "Talend-CI-Builder";
+	public final static String CISigner_PREFIX = "Talend-Signature";
 	public final static String CIFolder = "studio-tools";
 
 	/**

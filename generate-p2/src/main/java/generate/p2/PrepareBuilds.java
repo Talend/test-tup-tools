@@ -45,6 +45,11 @@ public class PrepareBuilds {
 		String ciFolerStr = latstBuldRtFlderStr + File.separator + Constants.CIFolder;
 		File latstCIBuilderFile = CommUtil.getLatstCIBuildERFile(ciFolerStr, Constants.CIBuilder_PREFIX,Constants.ZIP_SUFFIX);
 		System.out.println(latstCIBuilderFile.getAbsolutePath());
+		
+		// get signer file
+		File latstSignerFile = CommUtil.getLatstCIBuildERFile(ciFolerStr, Constants.CISigner_PREFIX,Constants.ZIP_SUFFIX);
+		System.out.println(latstSignerFile.getAbsolutePath());
+				
 
 		// upload studio
 		if (Boolean.getBoolean("isNeedStudio")) {
@@ -94,8 +99,17 @@ public class PrepareBuilds {
 			} catch (Exception e1) {
 				System.err.println("upload CIBuilder failed");
 			}
+		}		
+		// upload signer build
+				if (Boolean.getBoolean("isNeedCISigner")) {
+					try {
+						CommUtil.copyBuild(latstSignerFile, smbDestFolderStr);
+						System.err.println("upload SignerFile done");
+					} catch (Exception e1) {
+						System.err.println("upload SignerFile failed");
+					}
 		}
-
+				
 		try {
 			System.err.println("latest studio: " + latstStudioFile);
 			String destStudioFileStr = CommUtil.copyBuild(latstStudioFile, localDestFileStr);
