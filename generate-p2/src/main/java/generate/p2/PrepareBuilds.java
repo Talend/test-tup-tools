@@ -134,7 +134,7 @@ public class PrepareBuilds {
 
 			// generate p2
 			String commandStr = studioFolderStr + File.separator + Constants.STUDIO_EXE	+ " -nosplash -consoleLog -application org.eclipse.equinox.p2.director -repository file:///" + swtbotP2FolderString + " -installIU org.talend.swtbot.update.site.feature.feature.group";
-			CommUtil.runCommand(commandStr, null);
+			CommUtil.runCommand("cmd /c "+commandStr, null);
 			System.err.println("generate p2 done");
 
 			// zip p2
