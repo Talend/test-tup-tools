@@ -364,6 +364,14 @@ public class CommUtil {
 	 * @author xjguo
 	 */
 	public static String getLastLicenseFile(FTPClient ftpClient, String parentPath) throws IOException {
+		if (!ftpClient.isConnected()) {
+			ftpClient.connect(ftpServer, 21);
+			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+			if (!ftpClient.login(ftpUserid, ftpPassword)) {
+				ftpClient.disconnect();
+				throw new IOException("Can't login to FTP server");
+			}
+		}
 		List<String> files = new ArrayList<String>();
 		String licensePath = "";
 		List<String> licenseList = new ArrayList<String>();
@@ -390,6 +398,14 @@ public class CommUtil {
 	 * @author xjguo
 	 */
 	public static String getLatstMixedLicenseFile(FTPClient ftpClient, String parentPath) throws IOException {
+		if (!ftpClient.isConnected()) {
+			ftpClient.connect(ftpServer, 21);
+			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+			if (!ftpClient.login(ftpUserid, ftpPassword)) {
+				ftpClient.disconnect();
+				throw new IOException("Can't login to FTP server");
+			}
+		}
 		List<String> files = new ArrayList<String>();
 		String licensePath = "";
 		List<String> licenseList = new ArrayList<String>();
@@ -422,7 +438,7 @@ public class CommUtil {
 			if (!ftpClient.login(ftpUserid, ftpPassword)) {
 				ftpClient.disconnect();
 				throw new IOException("Can't login to FTP server");
-			} 
+			}
 		}
 		String buildPath = "";
 		List<String> buildList = new ArrayList<String>();
