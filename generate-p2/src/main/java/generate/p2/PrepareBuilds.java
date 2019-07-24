@@ -63,6 +63,7 @@ public class PrepareBuilds {
 				System.err.println("upload license done");
 			} catch (Exception e) {
 				System.err.println("upload license failed");
+				System.err.println(e.getMessage());
 			}
 		}
 
@@ -77,6 +78,7 @@ public class PrepareBuilds {
 				System.err.println("upload mixed license done");
 			} catch (Exception e) {
 				System.err.println("upload mixed license failed");
+				System.err.println(e.getMessage());
 			}
 		}
 
@@ -91,6 +93,7 @@ public class PrepareBuilds {
 				System.err.println("upload studio done");
 			} catch (Exception e) {
 				System.err.println("upload studio failed");
+				System.err.println(e.getMessage());
 			}
 		}
 
@@ -106,6 +109,7 @@ public class PrepareBuilds {
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("upload full p2 failed");
+				System.err.println(e.getMessage());
 			}
 		}
 
@@ -121,6 +125,7 @@ public class PrepareBuilds {
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("upload ci builder failed");
+				System.err.println(e.getMessage());
 			}
 		}
 
@@ -136,6 +141,7 @@ public class PrepareBuilds {
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("upload CI Signer file failed");
+				System.err.println(e.getMessage());
 			}
 		}
 
@@ -151,6 +157,7 @@ public class PrepareBuilds {
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("upload TAC failed");
+				System.err.println(e.getMessage());
 			}
 		}
 
@@ -191,8 +198,8 @@ public class PrepareBuilds {
 			CommUtil.uploadFileToSamba(p2SrcFileStr);
 			System.err.println("upload SWT p2 done");
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.err.println("upload SWT P2 failed");
+			System.err.println(e.getMessage());
 		}
 
 		if (Boolean.getBoolean("isClearUpLocalFolder")) {
@@ -200,6 +207,7 @@ public class PrepareBuilds {
 				CommUtil.deleteFolder(localDestFileStr);
 			} catch (Exception e) {
 				System.err.println("clear up local folder failed");
+				System.err.println(e.getMessage());
 			}
 		}
 
