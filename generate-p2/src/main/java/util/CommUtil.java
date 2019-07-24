@@ -33,6 +33,9 @@ public class CommUtil {
 	static String licenseKey = System.getProperty("licenseKey");
 	static String mixedLicenseKey = System.getProperty("mixedLicenseKey");
 	public static String latstBuldRtFlderNm;
+	static String ftpServer = System.getProperty("ftpServer");
+	static String ftpUserid = System.getProperty("ftpUserid");
+	static String ftpPassword = System.getProperty("ftpPassword");
 
 	/**
 	 * get latest build folder under nightly foler
@@ -413,6 +416,14 @@ public class CommUtil {
 	 * @author xjguo
 	 */
 	public static String getLastBuildFilterFile(FTPClient ftpClient, String parentPath, String buildType) throws IOException {
+		if (!ftpClient.isConnected()) {
+			ftpClient.connect(ftpServer, 21);
+			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+			if (!ftpClient.login(ftpUserid, ftpPassword)) {
+				ftpClient.disconnect();
+				throw new IOException("Can't login to FTP server");
+			} 
+		}
 		String buildPath = "";
 		List<String> buildList = new ArrayList<String>();
 		if (Constants.STUDIO_PREFIX.equals(buildType)) {
