@@ -8,57 +8,30 @@ import java.util.List;
 import org.apache.commons.net.ftp.FTPClient;
 
 import constant.Constants;
-import jcifs.UniAddress;
-import jcifs.smb.NtlmPasswordAuthentication;
 import util.CommUtil;
 
 public class PrepareBuilds {
+	static String localDestFileStr = System.getProperty("localDestFileStr");
+	static String licensePrefix = System.getProperty("licensePrefix");
+	static String smbDestFolderStr = System.getProperty("smbDestFolderStr");
+
+	static String ftpServer = System.getProperty("ftpServer");
+	static String ftpUserid = System.getProperty("ftpUserid");
+	static String ftpPassword = System.getProperty("ftpPassword");
+
+	static String sambaDir = System.getProperty("sambaDir");
+	static String sambaServer = System.getProperty("sambaServer");
+	static String sambaUser = System.getProperty("sambaUser");
+	static String sambaPasswd = System.getProperty("sambaPasswd");
+
+	static String destLicenseFileStr = "";
+	static String destStudioFileStr = "";
 
 	public static void main(String[] args) throws IOException {
 		new PrepareBuilds().generatP2();
 	}
 
 	public void generatP2() throws IOException {
-		System.setProperty("localDestFileStr", "D:/build_1");
-		System.setProperty("licensePrefix", "TP_ALL");
-		System.setProperty("keyContains", "V7.3.1");
-		System.setProperty("licenseKey", "30days_5users");
-		System.setProperty("mixedLicenseKey", "_mixed");
-
-		System.setProperty("ftpServer", "192.168.30.10");
-		System.setProperty("ftpUserid", "anonymous");
-		System.setProperty("ftpPassword", "");
-
-		System.setProperty("sambaDir", "/talendqa/public/TUP_P2_builds_debug");
-		System.setProperty("sambaServer", "192.168.33.241");
-		System.setProperty("sambaUser", "automation");
-		System.setProperty("sambaPasswd", "automation.com");
-		System.setProperty("isNeedCISigner", "true");
-		System.setProperty("isNeedStudio", "true");
-		System.setProperty("isNeedCISigner", "true");
-		System.setProperty("isNeedLicense", "true");
-		System.setProperty("isNeedMixedLicense", "true");
-		System.setProperty("isNeedfullP2", "false");
-		System.setProperty("isNeedCIBuilder", "true");
-		System.setProperty("isNeedCIBuilder", "true");
-		System.setProperty("isNeedCISigner", "true");
-		System.setProperty("isClearUpLocalFolder", "false");
-		System.setProperty("isNeedTAC", "true");
-
-		String localDestFileStr = System.getProperty("localDestFileStr");
-		String licensePrefix = System.getProperty("licensePrefix");
-		String smbDestFolderStr = System.getProperty("smbDestFolderStr");
-		String ftpServer = System.getProperty("ftpServer");
-		String ftpUserid = System.getProperty("ftpUserid");
-		String ftpPassword = System.getProperty("ftpPassword");
-
-		String sambaDir = System.getProperty("sambaDir");
-		String sambaServer = System.getProperty("sambaServer");
-		String sambaUser = System.getProperty("sambaUser");
-		String sambaPasswd = System.getProperty("sambaPasswd");
-		String destLicenseFileStr = "";
-		String destStudioFileStr = "";
-
 		FTPClient ftpClient = new FTPClient();
 		ftpClient.connect(ftpServer, 21);
 		ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
