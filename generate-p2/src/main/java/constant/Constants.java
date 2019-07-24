@@ -9,6 +9,7 @@ public class Constants {
 	public final static String SWT = "swt";
 	public final static String SWT_PREFIX = "Talend_SWTBotAll_p2_repository";
 	public final static String STUDIO_EXE = "Talend-Studio-win-x86_64.exe";
+	public final static String STUDIO_EXE_Linux = "Talend-Studio-linux-gtk-x86_64";
 	public final static String P2_PREFIX = "P2s-In-";
 	
 	public final static String TAC_PREFIX = "Talend-AdministrationCenter";
