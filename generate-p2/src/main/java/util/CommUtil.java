@@ -1,7 +1,5 @@
 package util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -10,21 +8,20 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
 import constant.Constants;
-import jcifs.smb.NtlmPasswordAuthentication;
-import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileOutputStream;
 
@@ -216,6 +213,99 @@ public class CommUtil {
 		}
 		String commandStr = "cmd /c jar -xf " + zipFilePath;
 		runCommand(commandStr, destFile);
+	}
+	
+	public static boolean unzipFile(String zipFilePath, String targetFolderPath) {
+		InputStream input = null;
+		FileOutputStream output = null;
+		boolean flag = false;
+
+		String type = ".zip";
+		if (zipFilePath.endsWith(".rar")) {
+			type = ".rar";
+		} else if (zipFilePath.endsWith(".war")) {
+			type = ".war";
+		} else if (zipFilePath.endsWith(".tar.gz")) {
+			type = ".tar.gz";
+		} else if (zipFilePath.endsWith(".jar")) {
+			type = ".jar";
+		}
+		try {
+			File file = new File(zipFilePath);
+			ZipFile zipFile = new ZipFile(file);
+			String unZipFileName = file.getName().substring(0, file.getName().lastIndexOf(type));
+			File unzipFile = new File(targetFolderPath + "/" + unZipFileName);
+
+			if (!unzipFile.exists()) {
+				unzipFile.mkdir();
+			}
+			// get zipFile entries
+			Enumeration zipEnum = zipFile.entries();
+
+			// get current enum
+			while (zipEnum.hasMoreElements()) {
+				ZipEntry entry = (ZipEntry) zipEnum.nextElement();
+				String entryName = new String(entry.getName());
+
+				String[] everyEntry;
+				StringBuffer newEntry = new StringBuffer();
+				String fileName = "";
+				File outFile = null;
+				// create every file
+				if (entryName.endsWith("/")) {
+					everyEntry = entryName.split("/");
+					if ("Linux".equals(System.getProperty("os.name"))) {
+						for (int i = 0; i < everyEntry.length; i++)
+							newEntry = newEntry.append(everyEntry[i]).append("/");
+					} else {
+						for (int i = 0; i < everyEntry.length; i++)
+							newEntry = newEntry.append(everyEntry[i]).append("\\");
+					}
+
+					String newEntryName = unzipFile.getAbsolutePath() + "/" + newEntry.toString();
+					if (!new File(newEntryName).exists()) {
+						new File(newEntryName).mkdirs();
+					}
+				} else {
+					everyEntry = entryName.split("/");
+					if ("Linux".equals(System.getProperty("os.name"))) {
+						for (int i = 0; i < everyEntry.length - 1; i++) {
+							newEntry = newEntry.append(everyEntry[i]).append("/");
+						}
+					} else {
+						for (int i = 0; i < everyEntry.length - 1; i++) {
+							newEntry = newEntry.append(everyEntry[i]).append("\\");
+						}
+					}
+					fileName = everyEntry[everyEntry.length - 1];
+					String newEntryName = unzipFile.getAbsolutePath() + "/" + newEntry.toString();
+					if (!new File(newEntryName).exists()) {
+						new File(newEntryName).mkdirs();
+					}
+					outFile = new File(newEntryName + fileName);
+
+					// create file under the root folder
+					input = zipFile.getInputStream(entry);
+					if (!outFile.exists()) {
+						outFile.createNewFile();
+					}
+					output = new FileOutputStream(outFile);
+					byte[] buffer = new byte[1024 * 8];
+					int readLen = 0;
+					while ((readLen = input.read(buffer, 0, 1024 * 8)) != -1) {
+						output.write(buffer, 0, readLen);
+					}
+					input.close();
+					output.flush();
+					output.close();
+
+				}
+			}
+			flag = true;
+		} catch (IOException e) {
+			throw new RuntimeException(e.getCause());
+		}
+		return flag;
 	}
 
 	public static void runCommand(String commandStr, File destFile) {

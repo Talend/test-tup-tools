@@ -152,12 +152,12 @@ public class PrepareBuilds {
 		// download SWTBotAll_p2 from ftp to local and unzip
 		String destSWTFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastSWTFile, localDestFileStr);
 		ftpClient.disconnect();
-		CommUtil.unzip(destSWTFileStr, localDestFileStr + "/" + new File(destSWTFileStr).getName().replace(".zip", ""));
+		CommUtil.unzipFile(destSWTFileStr, localDestFileStr + "/" + new File(destSWTFileStr).getName().replace(".zip", ""));
 		System.err.println("unzip SWTBotAll_p2 done: " + destStudioFileStr);
 		String swtbotP2FolderString = destSWTFileStr.replace(".zip", "");
-		CommUtil.unzip(destLicenseFileStr, localDestFileStr);
+		CommUtil.unzipFile(destLicenseFileStr, localDestFileStr);
 		System.err.println("unzip license done: " + destLicenseFileStr);
-		CommUtil.unzip(destStudioFileStr, localDestFileStr);
+		CommUtil.unzipFile(destStudioFileStr, localDestFileStr);
 		System.err.println("unzip studio done: " + destStudioFileStr);
 		// copy license to Studio
 		String licenseFolderStr = destLicenseFileStr.replace(".zip", "");
