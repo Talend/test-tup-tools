@@ -2,10 +2,12 @@ package util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -217,6 +219,9 @@ public class CommUtil {
 	}
 
 	public static void runCommand(String commandStr, File destFile) {
+		if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+			commandStr = commandStr.replace("cmd /c ", "sh ");
+		}
 		Runtime runtime = Runtime.getRuntime();
 		Process process = null;
 		try {
@@ -441,6 +446,7 @@ public class CommUtil {
 			}
 		}
 		String buildPath = "";
+
 		List<String> buildList = new ArrayList<String>();
 		if (Constants.STUDIO_PREFIX.equals(buildType)) {
 			buildList = Arrays.asList(ftpClient.listNames(parentPath + "/" + Constants.ALL));// list : \\192.168.30.10\nightly\V7.3.1SNAPSHOT_20190723_1939\all
@@ -539,6 +545,19 @@ public class CommUtil {
 	 */
 	public static void uploadFileToSamba(String localFilePath) {
 		uploadFileToSamba(localFilePath, System.getProperty("sambaServer"), System.getProperty("sambaUser"), System.getProperty("sambaPasswd"), System.getProperty("sambaDir"));
+	}
+
+	public static void writeStrToFile(String filePath, String str, Boolean overwrite) {
+		File tempfile = new File(filePath);
+		try {
+			FileWriter fw = null;
+			fw = new FileWriter(tempfile, overwrite);
+			BufferedWriter out = new BufferedWriter(fw);
+			out.write(str + "\r\n", 0, (str + "\r\n").length());
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
