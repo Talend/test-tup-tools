@@ -176,7 +176,7 @@ public class PrepareBuilds {
 		// zip SWT p2
 		File localDestFile = new File(localDestFileStr);
 		String studioFolderNameStr = new File(studioFolderStr).getName();
-		String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + " " + studioFolderNameStr.replace(".zip", "");
+		String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderStr + " " + studioFolderStr.replace(".zip", "");
 		CommUtil.runCommand(zipCommStr, localDestFile);
 		System.err.println("zip p2 done");
 		String p2SrcFileStr = CommUtil.getFilesWithStartEndFilter(localDestFile, Constants.P2_PREFIX, "").getAbsolutePath();
