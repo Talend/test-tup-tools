@@ -26,7 +26,7 @@ public class PrepareBuilds {
 
 	static String destLicenseFileStr = "";
 	static String destStudioFileStr = "";
-	
+
 	public static void main(String[] args) throws IOException {
 		new PrepareBuilds().generatP2();
 	}
@@ -176,7 +176,7 @@ public class PrepareBuilds {
 		// zip SWT p2
 		File localDestFile = new File(localDestFileStr);
 		String studioFolderNameStr = new File(studioFolderStr).getName();
-		String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderStr + " " + studioFolderStr.replace(".zip", "");
+		String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + ".zip " + studioFolderNameStr.replace(".zip", "");
 		CommUtil.runCommand(zipCommStr, localDestFile);
 		System.err.println("zip p2 done");
 		String p2SrcFileStr = CommUtil.getFilesWithStartEndFilter(localDestFile, Constants.P2_PREFIX, "").getAbsolutePath();
@@ -192,6 +192,6 @@ public class PrepareBuilds {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 }
