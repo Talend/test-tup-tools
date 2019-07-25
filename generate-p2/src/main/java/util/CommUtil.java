@@ -215,7 +215,7 @@ public class CommUtil {
 		runCommand(commandStr, destFile);
 	}
 	
-	public static boolean unzipFile(String zipFilePath, String targetFolderPath) {
+	public static boolean unzipFile1(String zipFilePath, String targetFolderPath) {
 		InputStream input = null;
 		FileOutputStream output = null;
 		boolean flag = false;
