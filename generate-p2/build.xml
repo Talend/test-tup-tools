@@ -35,6 +35,15 @@
 		<antcall target="uploadToServer">
 			<param name="type" value="swtp2" />
 		</antcall>
+		
+		<if>
+			<equals arg1="isClearUpLocalFolder" arg2="true" />
+		    <then>
+		    	<delete dir="${localDestFileStr}" quiet="true" />
+		    	<echo>Delete ${localDestFileStr} successfully!!!</echo>
+			</then>
+		</if>
+		
 	</target>
 
 

@@ -42,6 +42,7 @@ public class PrepareBuilds {
 		CommUtil.writeStrToFile(tempFilePath, "sambaPasswd=" + System.getProperty("sambaPasswd"), true);
 		CommUtil.writeStrToFile(tempFilePath, "sambaServer=" + System.getProperty("sambaServer"), true);
 		CommUtil.writeStrToFile(tempFilePath, "sambaDir=" + System.getProperty("sambaDir"), true);
+		CommUtil.writeStrToFile(tempFilePath, "isClearUpLocalFolder=" + System.getProperty("isClearUpLocalFolder"), true);
 
 		FTPClient ftpClient = new FTPClient();
 		ftpClient.connect(ftpServer, 21);		
@@ -64,6 +65,8 @@ public class PrepareBuilds {
 			CommUtil.deleteFolder(localDestFileStr);
 		}
 		localRootFile.mkdirs();
+		CommUtil.writeStrToFile(tempFilePath, "localDestFileStr=" + localDestFileStr, true);
+
 
 		if (Boolean.getBoolean("isNeedLicense")) {
 			try {
@@ -187,7 +190,13 @@ public class PrepareBuilds {
 				exe = Constants.STUDIO_EXE_Linux;
 			}
 			String commandStr = studioFolderStr + "/" + exe + " -nosplash -consoleLog -application org.eclipse.equinox.p2.director -repository file:///" + swtbotP2FolderString + " -installIU org.talend.swtbot.update.site.feature.feature.group";
-			CommUtil.runCommand("cmd /c " + commandStr, null);
+			if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+				CommUtil.runCommand("chmod -R 777 "+localDestFileStr, null);
+				CommUtil.runCommand(commandStr, null);
+			}else {			
+				CommUtil.runCommand("cmd /c " + commandStr, null);
+			}
+			
 			System.err.println("generate p2 done");
 			// zip SWT p2
 			File localDestFile = new File(localDestFileStr);
@@ -202,16 +211,5 @@ public class PrepareBuilds {
 		} catch (Exception e) {
 			System.out.println("generate and upload swt p2 failed!!!");
 		}
-
-		System.err.println("Finish upload list!!!");
-		if (Boolean.getBoolean("isClearUpLocalFolder")) {
-			try { // clear up local folder
-				CommUtil.deleteFolder(localDestFileStr);
-			} catch (Exception e) {
-				System.err.println("clear up local folder failed");
-				e.printStackTrace();
-			}
-		}
-
 	}
 }
