@@ -213,7 +213,7 @@ public class CommUtil {
 		}
 		String commandStr = "cmd /c jar -xf " + zipFilePath;
 		if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-			commandStr = "unzip " + zipFilePath;
+			unzipFile1(zipFilePath,destDir);
 		}
 		runCommand(commandStr, destFile);
 	}
@@ -237,7 +237,7 @@ public class CommUtil {
 			File file = new File(zipFilePath);
 			ZipFile zipFile = new ZipFile(file);
 			String unZipFileName = file.getName().substring(0, file.getName().lastIndexOf(type));
-			File unzipFile = new File(targetFolderPath + "/" + unZipFileName);
+			File unzipFile = new File(targetFolderPath );
 
 			if (!unzipFile.exists()) {
 				unzipFile.mkdir();
