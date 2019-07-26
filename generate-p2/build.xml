@@ -6,7 +6,7 @@
 			<pathelement location="${ant.libs}/ant-contrib-0.6.jar" />
 		</classpath>
 	</taskdef>
-	<property file="tempfile.txt" />
+	<property file="${WORKSPACE}/tempfile.txt" />
 
 
 	<target name="test">
