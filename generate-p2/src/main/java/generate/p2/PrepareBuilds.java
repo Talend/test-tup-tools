@@ -44,14 +44,16 @@ public class PrepareBuilds {
 		CommUtil.writeStrToFile(tempFilePath, "sambaDir=" + System.getProperty("sambaDir"), true);
 
 		FTPClient ftpClient = new FTPClient();
-		ftpClient.connect(ftpServer, 21);
-		ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+		ftpClient.connect(ftpServer, 21);		
 		if (!ftpClient.login(ftpUserid, ftpPassword)) {
 			ftpClient.disconnect();
 			throw new IOException("Can't login to FTP server");
 		} else {
 			System.out.println("Connect FTP server successfully!");
 		}
+		ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+		ftpClient.enterLocalPassiveMode();
+		
 		List<String> listFiles = Arrays.asList(ftpClient.listNames());
 		// get latest build root folder
 		String lastBuildRootFolder = CommUtil.getLastStudioRootPath(listFiles);
@@ -71,7 +73,9 @@ public class PrepareBuilds {
 				destLicenseFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastLicense, localDestFileStr);
 				// add license to upload list
 				CommUtil.writeStrToFile(tempFilePath, "license=" + destLicenseFileStr, true);
+				System.out.println("Download license successfully!");
 			} catch (Exception e) {
+				System.out.println("Download license failed!!!");
 			}
 		}
 
@@ -83,7 +87,9 @@ public class PrepareBuilds {
 				String destMixLicenseFileStr = CommUtil.ftpDownloadFiles(ftpClient, latstMixedLicense, localDestFileStr);
 				// add mixed license to upload list
 				CommUtil.writeStrToFile(tempFilePath, "mixedlicense=" + destMixLicenseFileStr, true);
+				System.out.println("Download mixed license successfully!");
 			} catch (Exception e) {
+				System.out.println("Download mixed license failed!!!");
 			}
 		}
 
@@ -95,7 +101,9 @@ public class PrepareBuilds {
 				destStudioFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastStudio, localDestFileStr);
 				// add studio to upload list
 				CommUtil.writeStrToFile(tempFilePath, "studio=" + destStudioFileStr, true);
+				System.out.println("Download studio successfully!");
 			} catch (Exception e) {
+				System.out.println("Download studio failed!!!");
 			}
 		}
 
@@ -107,7 +115,9 @@ public class PrepareBuilds {
 				String destFullP2FileStr = CommUtil.ftpDownloadFiles(ftpClient, lastFullP2, localDestFileStr);
 				// add full p2 to upload list
 				CommUtil.writeStrToFile(tempFilePath, "fullP2=" + destFullP2FileStr, true);
+				System.out.println("Download full p2 successfully!");
 			} catch (Exception e) {
+				System.out.println("Download full p2 failed!!!");
 			}
 		}
 
@@ -119,7 +129,9 @@ public class PrepareBuilds {
 				String destCIBuilderFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastCIBuilder, localDestFileStr);
 				// add ci builder to upload list
 				CommUtil.writeStrToFile(tempFilePath, "cibuilder=" + destCIBuilderFileStr, true);
+				System.out.println("Download ci builder successfully!");
 			} catch (Exception e) {
+				System.out.println("Download ci builder failed!!!");
 			}
 		}
 
@@ -131,7 +143,9 @@ public class PrepareBuilds {
 				String destSignerFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastSignerFile, localDestFileStr);
 				// add CI signer to upload list
 				CommUtil.writeStrToFile(tempFilePath, "cisigner=" + destSignerFileStr, true);
+				System.out.println("Download ci signer successfully!");
 			} catch (Exception e) {
+				System.out.println("Download ci signer failed!!!");
 			}
 		}
 
@@ -143,7 +157,9 @@ public class PrepareBuilds {
 				String destTacFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastTacFile, localDestFileStr);
 				// add tac to upload list
 				CommUtil.writeStrToFile(tempFilePath, "tac=" + destTacFileStr, true);
+				System.out.println("Download tac successfully!");
 			} catch (Exception e) {
+				System.out.println("Download tac failed!!!");
 			}
 		}
 		try {
@@ -182,8 +198,9 @@ public class PrepareBuilds {
 			String p2SrcFileStr = CommUtil.getFilesWithStartEndFilter(localDestFile, Constants.P2_PREFIX, "").getAbsolutePath();
 			// add SWT p2 upload list
 			CommUtil.writeStrToFile(tempFilePath, "swtp2=" + p2SrcFileStr, true);
+			System.out.println("generate and upload swt p2 successfully!");
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("generate and upload swt p2 failed!!!");
 		}
 
 		System.err.println("Finish upload list!!!");

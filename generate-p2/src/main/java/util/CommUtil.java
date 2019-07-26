@@ -214,7 +214,7 @@ public class CommUtil {
 		String commandStr = "cmd /c jar -xf " + zipFilePath;
 		runCommand(commandStr, destFile);
 	}
-	
+
 	public static boolean unzipFile1(String zipFilePath, String targetFolderPath) {
 		InputStream input = null;
 		FileOutputStream output = null;
@@ -638,6 +638,7 @@ public class CommUtil {
 	}
 
 	public static void writeStrToFile(String filePath, String str, Boolean overwrite) {
+		str = str.replaceAll("\\\\", "/");
 		File tempfile = new File(filePath);
 		try {
 			FileWriter fw = null;

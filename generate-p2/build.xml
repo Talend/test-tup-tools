@@ -6,10 +6,11 @@
 			<pathelement location="${ant.libs}/ant-contrib-0.6.jar" />
 		</classpath>
 	</taskdef>
-	<property file="${WORKSPACE}/tempfile.txt" />
+	<property file="${job.workspace}/tempfile.txt" />
 
 
 	<target name="test">
+		<echo>start to upload file based on file : ${job.workspace}/tempfile.txt</echo>
 		<antcall target="uploadToServer">
 			<param name="type" value="license" />
 		</antcall>
