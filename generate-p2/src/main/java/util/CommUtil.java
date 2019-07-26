@@ -212,6 +212,9 @@ public class CommUtil {
 			destFile.mkdirs();
 		}
 		String commandStr = "cmd /c jar -xf " + zipFilePath;
+		if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+			commandStr = "unzip " + zipFilePath;
+		}
 		runCommand(commandStr, destFile);
 	}
 
