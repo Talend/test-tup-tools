@@ -146,42 +146,45 @@ public class PrepareBuilds {
 			} catch (Exception e) {
 			}
 		}
-
-		// get SWTBotAll_p2
-		String lastSWTFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.SWT_PREFIX);
-		// download SWTBotAll_p2 from ftp to local and unzip
-		String destSWTFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastSWTFile, localDestFileStr);
-		ftpClient.disconnect();
-		CommUtil.unzip(destSWTFileStr, localDestFileStr + "/" + new File(destSWTFileStr).getName().replace(".zip", ""));
-		System.err.println("unzip SWTBotAll_p2 done: " + destStudioFileStr);
-		String swtbotP2FolderString = destSWTFileStr.replace(".zip", "");
-		CommUtil.unzip(destLicenseFileStr, localDestFileStr);
-		System.err.println("unzip license done: " + destLicenseFileStr);
-		CommUtil.unzip(destStudioFileStr, localDestFileStr);
-		System.err.println("unzip studio done: " + destStudioFileStr);
-		// copy license to Studio
-		String licenseFolderStr = destLicenseFileStr.replace(".zip", "");
-		String studioFolderStr = destStudioFileStr.replace(".zip", "");
-		File licenseFile = CommUtil.getFilesWithStartEndFilter(new File(licenseFolderStr), licensePrefix, "");
-		CommUtil.copyBuild(licenseFile, studioFolderStr);
-		System.err.println("copy license to studio done");
-		// generate SWT p2
-		String exe = Constants.STUDIO_EXE;
-		if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-			exe = Constants.STUDIO_EXE_Linux;
+		try {
+			// get SWTBotAll_p2
+			String lastSWTFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.SWT_PREFIX);
+			// download SWTBotAll_p2 from ftp to local and unzip
+			String destSWTFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastSWTFile, localDestFileStr);
+			ftpClient.disconnect();
+			CommUtil.unzip(destSWTFileStr, localDestFileStr + "/" + new File(destSWTFileStr).getName().replace(".zip", ""));
+			System.err.println("unzip SWTBotAll_p2 done: " + destStudioFileStr);
+			String swtbotP2FolderString = destSWTFileStr.replace(".zip", "");
+			CommUtil.unzip(destLicenseFileStr, localDestFileStr);
+			System.err.println("unzip license done: " + destLicenseFileStr);
+			CommUtil.unzip(destStudioFileStr, localDestFileStr);
+			System.err.println("unzip studio done: " + destStudioFileStr);
+			// copy license to Studio
+			String licenseFolderStr = destLicenseFileStr.replace(".zip", "");
+			String studioFolderStr = destStudioFileStr.replace(".zip", "");
+			File licenseFile = CommUtil.getFilesWithStartEndFilter(new File(licenseFolderStr), licensePrefix, "");
+			CommUtil.copyBuild(licenseFile, studioFolderStr);
+			System.err.println("copy license to studio done");
+			// generate SWT p2
+			String exe = Constants.STUDIO_EXE;
+			if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+				exe = Constants.STUDIO_EXE_Linux;
+			}
+			String commandStr = studioFolderStr + "/" + exe + " -nosplash -consoleLog -application org.eclipse.equinox.p2.director -repository file:///" + swtbotP2FolderString + " -installIU org.talend.swtbot.update.site.feature.feature.group";
+			CommUtil.runCommand("cmd /c " + commandStr, null);
+			System.err.println("generate p2 done");
+			// zip SWT p2
+			File localDestFile = new File(localDestFileStr);
+			String studioFolderNameStr = new File(studioFolderStr).getName();
+			String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + ".zip " + studioFolderNameStr.replace(".zip", "");
+			CommUtil.runCommand(zipCommStr, localDestFile);
+			System.err.println("zip p2 done");
+			String p2SrcFileStr = CommUtil.getFilesWithStartEndFilter(localDestFile, Constants.P2_PREFIX, "").getAbsolutePath();
+			// add SWT p2 upload list
+			CommUtil.writeStrToFile(tempFilePath, "swtp2=" + p2SrcFileStr, true);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		String commandStr = studioFolderStr + "/" + exe + " -nosplash -consoleLog -application org.eclipse.equinox.p2.director -repository file:///" + swtbotP2FolderString + " -installIU org.talend.swtbot.update.site.feature.feature.group";
-		CommUtil.runCommand("cmd /c " + commandStr, null);
-		System.err.println("generate p2 done");
-		// zip SWT p2
-		File localDestFile = new File(localDestFileStr);
-		String studioFolderNameStr = new File(studioFolderStr).getName();
-		String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + ".zip " + studioFolderNameStr.replace(".zip", "");
-		CommUtil.runCommand(zipCommStr, localDestFile);
-		System.err.println("zip p2 done");
-		String p2SrcFileStr = CommUtil.getFilesWithStartEndFilter(localDestFile, Constants.P2_PREFIX, "").getAbsolutePath();
-		// add SWT p2 upload list
-		CommUtil.writeStrToFile(tempFilePath, "swtp2=" + p2SrcFileStr, true);
 
 		System.err.println("Finish upload list!!!");
 		if (Boolean.getBoolean("isClearUpLocalFolder")) {
