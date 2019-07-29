@@ -37,7 +37,7 @@
 		</antcall>
 		
 		<if>
-			<equals arg1="isClearUpLocalFolder" arg2="true" />
+			<equals arg1="${isClearUpLocalFolder}" arg2="true" />
 		    <then>
 		    	<delete dir="${localDestFileStr}" quiet="true" />
 		    	<echo>Delete ${localDestFileStr} successfully!!!</echo>
