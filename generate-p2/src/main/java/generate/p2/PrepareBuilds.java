@@ -2,169 +2,214 @@ package generate.p2;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.net.ftp.FTPClient;
 
 import constant.Constants;
 import util.CommUtil;
 
 public class PrepareBuilds {
-
 	static String localDestFileStr = System.getProperty("localDestFileStr");
 	static String licensePrefix = System.getProperty("licensePrefix");
 	static String smbDestFolderStr = System.getProperty("smbDestFolderStr");
+
+	static String ftpServer = System.getProperty("ftpServer");
+	static String ftpUserid = System.getProperty("ftpUserid");
+	static String ftpPassword = System.getProperty("ftpPassword");
+
+	static String sambaDir = System.getProperty("sambaDir");
+	static String sambaServer = System.getProperty("sambaServer");
+	static String sambaUser = System.getProperty("sambaUser");
+	static String sambaPasswd = System.getProperty("sambaPasswd");
+
+	static String destLicenseFileStr = "";
+	static String destStudioFileStr = "";
 
 	public static void main(String[] args) throws IOException {
 		new PrepareBuilds().generatP2();
 	}
 
 	public void generatP2() throws IOException {
-		// get latest build folder
-		String latstBuldRtFlderStr = CommUtil.getLatstBuldRtFlderStr();
-		System.err.println("latest build: " + latstBuldRtFlderStr);
+		String tempFilePath = new File("").getAbsolutePath() + "/tempfile.txt";
+		File tempfile = new File(tempFilePath);
+		if (tempfile.exists()) {
+			tempfile.delete();
+		}
+		tempfile.createNewFile();
+		CommUtil.writeStrToFile(tempFilePath, "sambaUser=" + System.getProperty("sambaUser"), true);
+		CommUtil.writeStrToFile(tempFilePath, "sambaPasswd=" + System.getProperty("sambaPasswd"), true);
+		CommUtil.writeStrToFile(tempFilePath, "sambaServer=" + System.getProperty("sambaServer"), true);
+		CommUtil.writeStrToFile(tempFilePath, "sambaDir=" + System.getProperty("sambaDir"), true);
+		CommUtil.writeStrToFile(tempFilePath, "isClearUpLocalFolder=" + System.getProperty("isClearUpLocalFolder"), true);
 
-		localDestFileStr = localDestFileStr + File.separator + CommUtil.latstBuldRtFlderNm;
-
-		// get license
-		File latstLicense = CommUtil.getLatstLicenseFile(latstBuldRtFlderStr);
-		System.err.println("latest license: " + latstLicense);
-		String destLicenseFileStr = CommUtil.copyBuild(latstLicense, localDestFileStr);
-		CommUtil.unzip(destLicenseFileStr, localDestFileStr);
-		System.err.println("unzip license done: " + destLicenseFileStr);
-
-		// get mixed license
-		File latstMixedLicense = CommUtil.getLatstMixedLicenseFile(latstBuldRtFlderStr);
-
-		// get studio
-		String allFolerStr = latstBuldRtFlderStr + File.separator + Constants.ALL;
-		File latstStudioFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL,Constants.STUDIO_PREFIX, Constants.ZIP_SUFFIX);
-
-		// get full p2
-		File latstFullP2File = CommUtil.getLatstFullP2BuildFile(allFolerStr, Constants.FullP2_PREFIX,Constants.ZIP_SUFFIX);
-		System.out.println(latstFullP2File.getAbsolutePath());
-
-		// get ci builder
-		String ciFolerStr = latstBuldRtFlderStr + File.separator + Constants.CIFolder;
-		File latstCIBuilderFile = CommUtil.getLatstCIBuildERFile(ciFolerStr, Constants.CIBuilder_PREFIX,Constants.ZIP_SUFFIX);
-		System.out.println(latstCIBuilderFile.getAbsolutePath());
+		FTPClient ftpClient = new FTPClient();
+		ftpClient.connect(ftpServer, 21);		
+		if (!ftpClient.login(ftpUserid, ftpPassword)) {
+			ftpClient.disconnect();
+			throw new IOException("Can't login to FTP server");
+		} else {
+			System.out.println("Connect FTP server successfully!");
+		}
+		ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+		ftpClient.enterLocalPassiveMode();
 		
-		// get signer file
-		File latstSignerFile = CommUtil.getLatstCIBuildERFile(ciFolerStr, Constants.CISigner_PREFIX,Constants.ZIP_SUFFIX);
-		System.out.println(latstSignerFile.getAbsolutePath());
-				
+		List<String> listFiles = Arrays.asList(ftpClient.listNames());
+		// get latest build root folder
+		String lastBuildRootFolder = CommUtil.getLastStudioRootPath(listFiles);
+		System.err.println("latest build: " + lastBuildRootFolder);
+		localDestFileStr = localDestFileStr + File.separator + lastBuildRootFolder;
+		File localRootFile = new File(localDestFileStr);
+		if (localRootFile.exists()) {
+			CommUtil.deleteFolder(localDestFileStr);
+		}
+		localRootFile.mkdirs();
+		CommUtil.writeStrToFile(tempFilePath, "localDestFileStr=" + localDestFileStr, true);
 
-		// upload studio
+
+		if (Boolean.getBoolean("isNeedLicense")) {
+			try {
+				// get license
+				String lastLicense = CommUtil.getLastLicenseFile(ftpClient, lastBuildRootFolder);
+				// download license from ftp to local and unzip
+				destLicenseFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastLicense, localDestFileStr);
+				// add license to upload list
+				CommUtil.writeStrToFile(tempFilePath, "license=" + destLicenseFileStr, true);
+				System.out.println("Download license successfully!");
+			} catch (Exception e) {
+				System.out.println("Download license failed!!!");
+			}
+		}
+
+		if (Boolean.getBoolean("isNeedMixedLicense")) {
+			try {
+				// get mixed license
+				String latstMixedLicense = CommUtil.getLatstMixedLicenseFile(ftpClient, lastBuildRootFolder);
+				// download Mixed license from ftp to local
+				String destMixLicenseFileStr = CommUtil.ftpDownloadFiles(ftpClient, latstMixedLicense, localDestFileStr);
+				// add mixed license to upload list
+				CommUtil.writeStrToFile(tempFilePath, "mixedlicense=" + destMixLicenseFileStr, true);
+				System.out.println("Download mixed license successfully!");
+			} catch (Exception e) {
+				System.out.println("Download mixed license failed!!!");
+			}
+		}
+
 		if (Boolean.getBoolean("isNeedStudio")) {
 			try {
-				CommUtil.copyBuild(latstStudioFile, smbDestFolderStr);
-				System.err.println("upload studio done");
-			} catch (Exception e1) {
-				System.err.println("upload studio failed");
+				// get studio
+				String lastStudio = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.STUDIO_PREFIX);
+				// download studio from ftp to local and unzip
+				destStudioFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastStudio, localDestFileStr);
+				// add studio to upload list
+				CommUtil.writeStrToFile(tempFilePath, "studio=" + destStudioFileStr, true);
+				System.out.println("Download studio successfully!");
+			} catch (Exception e) {
+				System.out.println("Download studio failed!!!");
 			}
 		}
 
-		// upload License
-		if (Boolean.getBoolean("isNeedLicense")) {
-			try {
-				CommUtil.copyBuild(latstLicense, smbDestFolderStr);
-				System.err.println("upload License done");
-			} catch (Exception e1) {
-				System.err.println("upload License failed");
-			}
-		}
-
-		// upload mixed License
-		if (Boolean.getBoolean("isNeedLicense")) {
-			try {
-				CommUtil.copyBuild(latstMixedLicense, smbDestFolderStr);
-				System.err.println("upload mixed License done");
-			} catch (Exception e1) {
-				System.err.println("upload mixed License failed");
-			}
-		}
-		
-		// upload full p2
 		if (Boolean.getBoolean("isNeedfullP2")) {
 			try {
-				CommUtil.copyBuild(latstFullP2File, System.getProperty("smbDestFolderStr"));
-				System.err.println("upload FullP2 done");
-			} catch (Exception e1) {
-				System.err.println("upload FullP2 failed");
+				// get full p2
+				String lastFullP2 = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.FullP2_PREFIX);
+				// download full p2 from ftp to local
+				String destFullP2FileStr = CommUtil.ftpDownloadFiles(ftpClient, lastFullP2, localDestFileStr);
+				// add full p2 to upload list
+				CommUtil.writeStrToFile(tempFilePath, "fullP2=" + destFullP2FileStr, true);
+				System.out.println("Download full p2 successfully!");
+			} catch (Exception e) {
+				System.out.println("Download full p2 failed!!!");
 			}
 		}
 
-		// upload ci builder
 		if (Boolean.getBoolean("isNeedCIBuilder")) {
 			try {
-				CommUtil.copyBuild(latstCIBuilderFile, System.getProperty("smbDestFolderStr"));
-				System.err.println("upload CIBuilder done");
-			} catch (Exception e1) {
-				System.err.println("upload CIBuilder failed");
+				// get ci builder
+				String lastCIBuilder = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.CIBuilder_PREFIX);
+				// download ci builder from ftp to local
+				String destCIBuilderFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastCIBuilder, localDestFileStr);
+				// add ci builder to upload list
+				CommUtil.writeStrToFile(tempFilePath, "cibuilder=" + destCIBuilderFileStr, true);
+				System.out.println("Download ci builder successfully!");
+			} catch (Exception e) {
+				System.out.println("Download ci builder failed!!!");
 			}
-		}		
-		// upload signer build
-				if (Boolean.getBoolean("isNeedCISigner")) {
-					try {
-						CommUtil.copyBuild(latstSignerFile, smbDestFolderStr);
-						System.err.println("upload SignerFile done");
-					} catch (Exception e1) {
-						System.err.println("upload SignerFile failed");
-					}
 		}
-				
+
+		if (Boolean.getBoolean("isNeedCISigner")) {
+			try {
+				// get CI signer file
+				String lastSignerFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.CISigner_PREFIX);
+				// download CI signer file from ftp to local
+				String destSignerFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastSignerFile, localDestFileStr);
+				// add CI signer to upload list
+				CommUtil.writeStrToFile(tempFilePath, "cisigner=" + destSignerFileStr, true);
+				System.out.println("Download ci signer successfully!");
+			} catch (Exception e) {
+				System.out.println("Download ci signer failed!!!");
+			}
+		}
+
+		if (Boolean.getBoolean("isNeedTAC")) {
+			try {
+				// get tac
+				String lastTacFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.TAC_PREFIX);
+				// // download tac from ftp to local
+				String destTacFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastTacFile, localDestFileStr);
+				// add tac to upload list
+				CommUtil.writeStrToFile(tempFilePath, "tac=" + destTacFileStr, true);
+				System.out.println("Download tac successfully!");
+			} catch (Exception e) {
+				System.out.println("Download tac failed!!!");
+			}
+		}
 		try {
-			System.err.println("latest studio: " + latstStudioFile);
-			String destStudioFileStr = CommUtil.copyBuild(latstStudioFile, localDestFileStr);
+			// get SWTBotAll_p2
+			String lastSWTFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.SWT_PREFIX);
+			// download SWTBotAll_p2 from ftp to local and unzip
+			String destSWTFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastSWTFile, localDestFileStr);
+			ftpClient.disconnect();
+			CommUtil.unzip(destSWTFileStr, localDestFileStr + "/" + new File(destSWTFileStr).getName().replace(".zip", ""));
+			System.err.println("unzip SWTBotAll_p2 done: " + destStudioFileStr);
+			String swtbotP2FolderString = destSWTFileStr.replace(".zip", "");
+			CommUtil.unzip(destLicenseFileStr, localDestFileStr);
+			System.err.println("unzip license done: " + destLicenseFileStr);
 			CommUtil.unzip(destStudioFileStr, localDestFileStr);
 			System.err.println("unzip studio done: " + destStudioFileStr);
-
-			// get swtbotP2
-			String swtFolderStr = latstBuldRtFlderStr + File.separator + Constants.SWT;
-			File latstSwtbotP2File = CommUtil.getLatstBuildFile(swtFolderStr, Constants.SWT_PREFIX, "", "",Constants.ZIP_SUFFIX);
-			System.err.println("latest swtbotP2: " + latstSwtbotP2File);
-			String destSwtbotP2FileStr = CommUtil.copyBuild(latstSwtbotP2File, localDestFileStr);
-			String swtbotP2FolderString = localDestFileStr + File.separator	+ latstSwtbotP2File.getName().replace(".zip", "");
-			CommUtil.unzip(destSwtbotP2FileStr, swtbotP2FolderString);
-			System.err.println("unzip swtbotP2 done: " + destSwtbotP2FileStr);
-
 			// copy license to Studio
 			String licenseFolderStr = destLicenseFileStr.replace(".zip", "");
 			String studioFolderStr = destStudioFileStr.replace(".zip", "");
 			File licenseFile = CommUtil.getFilesWithStartEndFilter(new File(licenseFolderStr), licensePrefix, "");
 			CommUtil.copyBuild(licenseFile, studioFolderStr);
 			System.err.println("copy license to studio done");
-
-			// generate p2
-			String commandStr = studioFolderStr + File.separator + Constants.STUDIO_EXE	+ " -nosplash -consoleLog -application org.eclipse.equinox.p2.director -repository file:///" + swtbotP2FolderString + " -installIU org.talend.swtbot.update.site.feature.feature.group";
-			CommUtil.runCommand("cmd /c "+commandStr, null);
+			// generate SWT p2
+			String exe = Constants.STUDIO_EXE;
+			if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+				exe = Constants.STUDIO_EXE_Linux;
+			}
+			String commandStr = studioFolderStr + "/" + exe + " -nosplash -consoleLog -application org.eclipse.equinox.p2.director -repository file:///" + swtbotP2FolderString + " -installIU org.talend.swtbot.update.site.feature.feature.group";
+			if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+				CommUtil.runCommand("chmod -R 777 "+localDestFileStr, null);
+				CommUtil.runCommand(commandStr, null);
+			}else {			
+				CommUtil.runCommand("cmd /c " + commandStr, null);
+			}
+			
 			System.err.println("generate p2 done");
-
-			// zip p2
+			// zip SWT p2
 			File localDestFile = new File(localDestFileStr);
-			String studioFolderNameStr = latstStudioFile.getName();
-			String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + " "+ studioFolderNameStr.replace(".zip", "");
+			String studioFolderNameStr = new File(studioFolderStr).getName();
+			String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + ".zip " + studioFolderNameStr.replace(".zip", "");
 			CommUtil.runCommand(zipCommStr, localDestFile);
 			System.err.println("zip p2 done");
-
-			// upload p2
-			File p2SrcFileStr = CommUtil.getFilesWithStartEndFilter(localDestFile, Constants.P2_PREFIX, "");
-			CommUtil.copyBuild(p2SrcFileStr, smbDestFolderStr);
-			System.err.println("upload p2 done");
-
-			// copy tac
-			if (Boolean.getBoolean("isNeedTAC")) {
-				try {
-					File latstTACFile = CommUtil.getLatstBuildFile(allFolerStr, Constants.V_PREFIX, Constants.SUBALL,Constants.TAC_PREFIX, Constants.ZIP_SUFFIX);
-					CommUtil.copyBuild(latstTACFile, smbDestFolderStr);
-					System.err.println("upload tac done");
-				} catch (Exception e1) {
-					System.err.println("upload tac failed");
-				}
-			}
+			String p2SrcFileStr = CommUtil.getFilesWithStartEndFilter(localDestFile, Constants.P2_PREFIX, "").getAbsolutePath();
+			// add SWT p2 upload list
+			CommUtil.writeStrToFile(tempFilePath, "swtp2=" + p2SrcFileStr, true);
+			System.out.println("generate and upload swt p2 successfully!");
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			// clean up locally download folder
-			CommUtil.deleteFolder(localDestFileStr);
+			System.out.println("generate and upload swt p2 failed!!!");
 		}
-
 	}
 }

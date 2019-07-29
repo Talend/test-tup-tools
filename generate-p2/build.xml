@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="prepareBuild" default="test" basedir="." xmlns:fl="antlib:it.haefelinger.flaka">
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${ant.libs}/ant-contrib-0.6.jar" />
+		</classpath>
+	</taskdef>
+	<property file="${job.workspace}/tempfile.txt" />
+
+
+	<target name="test">
+		<echo>start to upload file based on file : ${job.workspace}/tempfile.txt</echo>
+		<antcall target="uploadToServer">
+			<param name="type" value="license" />
+		</antcall>
+		<antcall target="uploadToServer">
+			<param name="type" value="mixedlicense" />
+		</antcall>
+		<antcall target="uploadToServer">
+			<param name="type" value="studio" />
+		</antcall>
+		<antcall target="uploadToServer">
+			<param name="type" value="fullP2" />
+		</antcall>
+		<antcall target="uploadToServer">
+			<param name="type" value="cibuilder" />
+		</antcall>
+		<antcall target="uploadToServer">
+			<param name="type" value="cisigner" />
+		</antcall>
+		<antcall target="uploadToServer">
+			<param name="type" value="tac" />
+		</antcall>
+		<antcall target="uploadToServer">
+			<param name="type" value="swtp2" />
+		</antcall>
+		
+		<if>
+			<equals arg1="${isClearUpLocalFolder}" arg2="true" />
+		    <then>
+		    	<delete dir="${localDestFileStr}" quiet="true" />
+		    	<echo>Delete ${localDestFileStr} successfully!!!</echo>
+			</then>
+		</if>
+		
+	</target>
+
+
+	<target name="uploadToServer">
+		<if>
+			<equals arg1="${type}" arg2="license" />
+			<then>
+				<var name="localfile" value="${license}" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="mixedlicense" />
+			<then>
+				<var name="localfile" value="${mixedlicense}" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="studio" />
+			<then>
+				<var name="localfile" value="${studio}" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="fullP2" />
+			<then>
+				<var name="localfile" value="${fullP2}" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="cibuilder" />
+			<then>
+				<var name="localfile" value="${cibuilder}" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="cisigner" />
+			<then>
+				<var name="localfile" value="${cisigner}" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="tac" />
+			<then>
+				<var name="localfile" value="${tac}" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="swtp2" />
+			<then>
+				<var name="localfile" value="${swtp2}" />
+			</then>
+		</if>
+
+		<trycatch>
+			<try>
+				<if>
+					<isset property="${type}" />
+					<then>
+						<echo>uploading file:${localfile}</echo>
+						<scp file="${localfile}" todir="${sambaUser}:${sambaPasswd}@${sambaServer}:${sambaDir}" trust="true" />
+
+					</then>
+				</if>
+			</try>
+			<catch>
+			</catch>
+		</trycatch>
+	</target>
+</project>
