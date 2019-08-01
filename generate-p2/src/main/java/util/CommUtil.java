@@ -540,6 +540,8 @@ public class CommUtil {
 				// add license to upload list
 				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
 				System.err.println("Download " + fileStr +" successfully!");
+			} else {
+				System.err.println(fileStr +" exist, no need to download&upload again");
 			}
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
@@ -562,6 +564,8 @@ public class CommUtil {
 				// add studio to upload list
 				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
 				System.err.println("Download " + fileStr + " successfully!");
+			} else {
+				System.err.println(fileStr +" exist, no need to download&upload again");
 			}
 		} catch (Exception e) {
 			System.err.println("Download " + fileStr + "  failed!!!");
