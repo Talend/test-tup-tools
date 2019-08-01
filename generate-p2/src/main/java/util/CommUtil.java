@@ -553,7 +553,7 @@ public class CommUtil {
 	public static String getAndDownloadOthers(FTPClient ftpClient, String lastBuildRootFolder, String localDestFileStr, String tempFilePath, String fileStr, String keyString) {
 		String destFileStr = "";
 		try {
-			// get studio
+			// get file e.g. studio
 			String latestFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, keyString);
 			
 			String fileNameStr = CommUtil.getFileName(latestFile);

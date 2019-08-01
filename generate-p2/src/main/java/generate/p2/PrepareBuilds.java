@@ -69,33 +69,33 @@ public class PrepareBuilds {
 
 		if (Boolean.getBoolean("isNeedLicense")) {
 			String licenseKey = System.getProperty("licenseKey");
-			destLicenseFileStr = CommUtil.getAndDownloadLicense(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "license",licenseKey);
+			destLicenseFileStr = CommUtil.getAndDownloadLicense(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "license",licenseKey);
 		}
 
 		if (Boolean.getBoolean("isNeedMixedLicense")) {
 			String mixedLicenseKey = System.getProperty("mixedLicenseKey");
-			CommUtil.getAndDownloadLicense(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "mixedlicense", mixedLicenseKey);
+			CommUtil.getAndDownloadLicense(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "mixedlicense", mixedLicenseKey);
 		}
 
 
 		if (Boolean.getBoolean("isNeedfullP2")) {
-			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "fullP2", Constants.FullP2_PREFIX);
+			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "fullP2", Constants.FullP2_PREFIX);
 		}
 
 		if (Boolean.getBoolean("isNeedCIBuilder")) {
-			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "cibuilder", Constants.CIBuilder_PREFIX);
+			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "cibuilder", Constants.CIBuilder_PREFIX);
 		}
 
 		if (Boolean.getBoolean("isNeedCISigner")) {
-			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "cisigner", Constants.CISigner_PREFIX);
+			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "cisigner", Constants.CISigner_PREFIX);
 		}
 
 		if (Boolean.getBoolean("isNeedTAC")) {
-			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "tac", Constants.TAC_PREFIX);
+			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "tac", Constants.TAC_PREFIX);
 		}
 		
 		if (Boolean.getBoolean("isNeedStudio")) {
-			destStudioFileStr = CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "studio", Constants.STUDIO_PREFIX);
+			destStudioFileStr = CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "studio", Constants.STUDIO_PREFIX);
 		}
 		
 		try {
