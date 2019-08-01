@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -554,7 +555,7 @@ public class CommUtil {
 		String destFileStr = "";
 		try {
 			// get studio
-			String latestFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.STUDIO_PREFIX);
+			String latestFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, keyString);
 			
 			String fileNameStr = CommUtil.getFileName(latestFile);
 			boolean isExisted = CommUtil.isFileExistedOnSambaServer(fileNameStr);
