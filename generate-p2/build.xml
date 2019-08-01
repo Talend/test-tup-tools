@@ -32,9 +32,7 @@
 		<antcall target="uploadToServer">
 			<param name="type" value="tac" />
 		</antcall>
-		<antcall target="uploadToServer">
-			<param name="type" value="swtp2" />
-		</antcall>
+		<scp file="${swtp2}" todir="${sambaUser}:${sambaPasswd}@${sambaServer}:${sambaDir}" trust="true" />
 		
 		<if>
 			<equals arg1="${isClearUpLocalFolder}" arg2="true" />

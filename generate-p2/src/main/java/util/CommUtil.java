@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
 import constant.Constants;
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileOutputStream;
 
@@ -29,13 +31,16 @@ public class CommUtil {
 
 	static String nightlyFolerStr = System.getProperty("nightlyFolerStr");
 	final static String keyContains = System.getProperty("keyContains");
-	static String licenseKey = System.getProperty("licenseKey");
-	static String mixedLicenseKey = System.getProperty("mixedLicenseKey");
 	public static String latstBuldRtFlderNm;
 	static String ftpServer = System.getProperty("ftpServer");
 	static String ftpUserid = System.getProperty("ftpUserid");
 	static String ftpPassword = System.getProperty("ftpPassword");
-
+	
+	static String sambaUser = System.getProperty("sambaUser");
+	static String sambaPasswd = System.getProperty("sambaPasswd");
+	static String sambaServer = System.getProperty("sambaServer");
+	static String sambaDir=System.getProperty("sambaDir");
+	
 	/**
 	 * get latest build folder under nightly foler
 	 * 
@@ -55,54 +60,6 @@ public class CommUtil {
 		String latstBuldRtFlderStr = latstBuldRtFlder.getAbsolutePath();
 		latstBuldRtFlderNm = latstBuldRtFlder.getName();
 		return latstBuldRtFlderStr;
-	}
-
-	/**
-	 * get latest license file
-	 * 
-	 * @param latstBuldRtFlderStr
-	 *            latest build folder string
-	 * @return latest license file
-	 * @author kwang
-	 */
-	public static File getLatstLicenseFile(String latstBuldRtFlderStr) {
-		String licenseFolerStr = latstBuldRtFlderStr + File.separator + Constants.LICENSE;
-		File licenseFolder = new File(licenseFolerStr);
-		File latstLicense;
-		if (licenseFolder.exists() && licenseFolder.isDirectory()) {
-			File[] licenseFiles = getFilesWithContainFilter(licenseFolder, licenseKey);
-			latstLicense = licenseFiles[0];
-		} else {
-			String licenseTempFolderStr = nightlyFolerStr + File.separator + Constants.LICENSE_TEMP + File.separator + keyContains.replace("V", "");
-			File[] licenseFiles = getFilesWithContainFilter(new File(licenseTempFolderStr), licenseKey);
-			List<File> licenseFilesList = Arrays.asList(licenseFiles);
-			latstLicense = getLatestFilAfterSort(licenseFilesList);
-		}
-		return latstLicense;
-	}
-
-	/**
-	 * get latest mixed license file
-	 * 
-	 * @param latstBuldRtFlderStr
-	 *            latest build folder string
-	 * @return latest mixed license file
-	 * @author xjguo
-	 */
-	public static File getLatstMixedLicenseFile(String latstBuldRtFlderStr) {
-		String licenseFolerStr = latstBuldRtFlderStr + File.separator + Constants.LICENSE;
-		File licenseFolder = new File(licenseFolerStr);
-		File latstLicense;
-		if (licenseFolder.exists() && licenseFolder.isDirectory()) {
-			File[] licenseFiles = getFilesWithContainFilter(licenseFolder, mixedLicenseKey);
-			latstLicense = licenseFiles[0];
-		} else {
-			String licenseTempFolderStr = nightlyFolerStr + File.separator + Constants.LICENSE_TEMP + File.separator + keyContains.replace("V", "");
-			File[] licenseFiles = getFilesWithContainFilter(new File(licenseTempFolderStr), mixedLicenseKey);
-			List<File> licenseFilesList = Arrays.asList(licenseFiles);
-			latstLicense = getLatestFilAfterSort(licenseFilesList);
-		}
-		return latstLicense;
 	}
 
 	/**
@@ -461,7 +418,7 @@ public class CommUtil {
 	 * @throws IOException
 	 * @author xjguo
 	 */
-	public static String getLastLicenseFile(FTPClient ftpClient, String parentPath) throws IOException {
+	public static String getLastLicenseFile(FTPClient ftpClient, String parentPath, String keyString) throws IOException {
 		if (!ftpClient.isConnected()) {
 			ftpClient.connect(ftpServer, 21);
 			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
@@ -476,46 +433,12 @@ public class CommUtil {
 		files = Arrays.asList(ftpClient.listNames(parentPath));
 		if (files.toString().contains(Constants.LICENSE)) {
 			licenseList = Arrays.asList(ftpClient.listNames(parentPath + "/" + Constants.LICENSE));
-			licenseList = acceptContainFilter(licenseList, licenseKey);
+			licenseList = acceptContainFilter(licenseList, keyString);
 			licensePath = licenseList.get(licenseList.size() - 1);
 		} else {
 			String licenseTempFolderStr = Constants.LICENSE_TEMP + "/" + keyContains.replace("V", "");
 			licenseList = Arrays.asList(ftpClient.listNames(licenseTempFolderStr));
-			licenseList = acceptContainFilter(licenseList, licenseKey);
-			Collections.sort(licenseList);
-			licensePath = licenseList.get(licenseList.size() - 1);
-		}
-		return licensePath;
-	}
-
-	/**
-	 * @param ftpClient
-	 * @param parentPath
-	 * @return
-	 * @throws IOException
-	 * @author xjguo
-	 */
-	public static String getLatstMixedLicenseFile(FTPClient ftpClient, String parentPath) throws IOException {
-		if (!ftpClient.isConnected()) {
-			ftpClient.connect(ftpServer, 21);
-			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-			if (!ftpClient.login(ftpUserid, ftpPassword)) {
-				ftpClient.disconnect();
-				throw new IOException("Can't login to FTP server");
-			}
-		}
-		List<String> files = new ArrayList<String>();
-		String licensePath = "";
-		List<String> licenseList = new ArrayList<String>();
-		files = Arrays.asList(ftpClient.listNames(parentPath));
-		if (files.toString().contains(Constants.LICENSE)) {
-			licenseList = Arrays.asList(ftpClient.listNames(parentPath + "/" + Constants.LICENSE));
-			licenseList = acceptContainFilter(licenseList, mixedLicenseKey);
-			licensePath = licenseList.get(licenseList.size() - 1);
-		} else {
-			String licenseTempFolderStr = Constants.LICENSE_TEMP + "/" + keyContains.replace("V", "");
-			licenseList = Arrays.asList(ftpClient.listNames(licenseTempFolderStr));
-			licenseList = acceptContainFilter(licenseList, mixedLicenseKey);
+			licenseList = acceptContainFilter(licenseList, keyString);
 			Collections.sort(licenseList);
 			licensePath = licenseList.get(licenseList.size() - 1);
 		}
@@ -600,6 +523,49 @@ public class CommUtil {
 		String filename = pathArray[pathArray.length - 1];
 		return filename;
 	}
+	
+	public static String getAndDownloadLicense(FTPClient ftpClient, String lastBuildRootFolder, String localDestFileStr, String tempFilePath, String fileStr, String keyString) {
+		String destFileStr = null;
+		try {
+			// get latest file
+			String latestFile = CommUtil.getLastLicenseFile(ftpClient, lastBuildRootFolder,keyString);
+			String fileNameStr = CommUtil.getFileName(latestFile);
+			boolean isExisted = CommUtil.isFileExistedOnSambaServer(fileNameStr);
+			if (!isExisted) {
+				
+				// download license from ftp to local and unzip
+				destFileStr = CommUtil.ftpDownloadFiles(ftpClient, latestFile, localDestFileStr);
+				
+				// add license to upload list
+				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
+				System.err.println("Download" + fileStr +" successfully!");
+			}
+		} catch (Exception e) {
+			System.err.println("Download" + fileStr + " failed!!!");
+		}
+		return destFileStr;
+	}
+	
+	public static String getAndDownloadOthers(FTPClient ftpClient, String lastBuildRootFolder, String localDestFileStr, String tempFilePath, String fileStr, String keyString) {
+		String destFileStr = "";
+		try {
+			// get studio
+			String latestFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.STUDIO_PREFIX);
+			
+			String fileNameStr = CommUtil.getFileName(latestFile);
+			boolean isExisted = CommUtil.isFileExistedOnSambaServer(fileNameStr);
+			if (!isExisted) {
+				// download studio from ftp to local and unzip
+				destFileStr = CommUtil.ftpDownloadFiles(ftpClient, latestFile, localDestFileStr);
+				// add studio to upload list
+				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
+				System.err.println("Download" + fileStr + " successfully!");
+			}
+		} catch (Exception e) {
+			System.err.println("Download" + fileStr + "  failed!!!");
+		}
+		return destFileStr;
+	}
 
 	/**
 	 * @param ftpClient
@@ -652,6 +618,18 @@ public class CommUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static boolean isFileExistedOnSambaServer(String fileStr) throws MalformedURLException, SmbException {
+		boolean isExisted = false;
+		String sambaDir = System.getProperty("sambaDir");
+		String sambaServer = System.getProperty("sambaServer");
+		String sambaUser = System.getProperty("sambaUser");
+		String sambaPasswd = System.getProperty("sambaPasswd");
+		String smbURL = "smb://" + sambaUser + ":" + sambaPasswd + "@" + sambaServer + sambaDir + File.separator + fileStr;
+		SmbFile samFile = new SmbFile(smbURL);
+		isExisted = samFile.exists() && samFile.isFile();
+		return isExisted;
 	}
 
 	/**

@@ -38,10 +38,10 @@ public class PrepareBuilds {
 			tempfile.delete();
 		}
 		tempfile.createNewFile();
-		CommUtil.writeStrToFile(tempFilePath, "sambaUser=" + System.getProperty("sambaUser"), true);
-		CommUtil.writeStrToFile(tempFilePath, "sambaPasswd=" + System.getProperty("sambaPasswd"), true);
-		CommUtil.writeStrToFile(tempFilePath, "sambaServer=" + System.getProperty("sambaServer"), true);
-		CommUtil.writeStrToFile(tempFilePath, "sambaDir=" + System.getProperty("sambaDir"), true);
+		CommUtil.writeStrToFile(tempFilePath, "sambaUser=" + sambaUser, true);
+		CommUtil.writeStrToFile(tempFilePath, "sambaPasswd=" + sambaPasswd, true);
+		CommUtil.writeStrToFile(tempFilePath, "sambaServer=" + sambaServer, true);
+		CommUtil.writeStrToFile(tempFilePath, "sambaDir=" + sambaDir, true);
 		CommUtil.writeStrToFile(tempFilePath, "isClearUpLocalFolder=" + System.getProperty("isClearUpLocalFolder"), true);
 
 		FTPClient ftpClient = new FTPClient();
@@ -67,104 +67,37 @@ public class PrepareBuilds {
 		localRootFile.mkdirs();
 		CommUtil.writeStrToFile(tempFilePath, "localDestFileStr=" + localDestFileStr, true);
 
-
 		if (Boolean.getBoolean("isNeedLicense")) {
-			try {
-				// get license
-				String lastLicense = CommUtil.getLastLicenseFile(ftpClient, lastBuildRootFolder);
-				// download license from ftp to local and unzip
-				destLicenseFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastLicense, localDestFileStr);
-				// add license to upload list
-				CommUtil.writeStrToFile(tempFilePath, "license=" + destLicenseFileStr, true);
-				System.out.println("Download license successfully!");
-			} catch (Exception e) {
-				System.out.println("Download license failed!!!");
-			}
+			String licenseKey = System.getProperty("licenseKey");
+			destLicenseFileStr = CommUtil.getAndDownloadLicense(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "license",licenseKey);
 		}
 
 		if (Boolean.getBoolean("isNeedMixedLicense")) {
-			try {
-				// get mixed license
-				String latstMixedLicense = CommUtil.getLatstMixedLicenseFile(ftpClient, lastBuildRootFolder);
-				// download Mixed license from ftp to local
-				String destMixLicenseFileStr = CommUtil.ftpDownloadFiles(ftpClient, latstMixedLicense, localDestFileStr);
-				// add mixed license to upload list
-				CommUtil.writeStrToFile(tempFilePath, "mixedlicense=" + destMixLicenseFileStr, true);
-				System.out.println("Download mixed license successfully!");
-			} catch (Exception e) {
-				System.out.println("Download mixed license failed!!!");
-			}
+			String mixedLicenseKey = System.getProperty("mixedLicenseKey");
+			CommUtil.getAndDownloadLicense(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "mixedlicense", mixedLicenseKey);
 		}
 
-		if (Boolean.getBoolean("isNeedStudio")) {
-			try {
-				// get studio
-				String lastStudio = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.STUDIO_PREFIX);
-				// download studio from ftp to local and unzip
-				destStudioFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastStudio, localDestFileStr);
-				// add studio to upload list
-				CommUtil.writeStrToFile(tempFilePath, "studio=" + destStudioFileStr, true);
-				System.out.println("Download studio successfully!");
-			} catch (Exception e) {
-				System.out.println("Download studio failed!!!");
-			}
-		}
 
 		if (Boolean.getBoolean("isNeedfullP2")) {
-			try {
-				// get full p2
-				String lastFullP2 = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.FullP2_PREFIX);
-				// download full p2 from ftp to local
-				String destFullP2FileStr = CommUtil.ftpDownloadFiles(ftpClient, lastFullP2, localDestFileStr);
-				// add full p2 to upload list
-				CommUtil.writeStrToFile(tempFilePath, "fullP2=" + destFullP2FileStr, true);
-				System.out.println("Download full p2 successfully!");
-			} catch (Exception e) {
-				System.out.println("Download full p2 failed!!!");
-			}
+			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "fullP2", Constants.FullP2_PREFIX);
 		}
 
 		if (Boolean.getBoolean("isNeedCIBuilder")) {
-			try {
-				// get ci builder
-				String lastCIBuilder = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.CIBuilder_PREFIX);
-				// download ci builder from ftp to local
-				String destCIBuilderFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastCIBuilder, localDestFileStr);
-				// add ci builder to upload list
-				CommUtil.writeStrToFile(tempFilePath, "cibuilder=" + destCIBuilderFileStr, true);
-				System.out.println("Download ci builder successfully!");
-			} catch (Exception e) {
-				System.out.println("Download ci builder failed!!!");
-			}
+			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "cibuilder", Constants.CIBuilder_PREFIX);
 		}
 
 		if (Boolean.getBoolean("isNeedCISigner")) {
-			try {
-				// get CI signer file
-				String lastSignerFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.CISigner_PREFIX);
-				// download CI signer file from ftp to local
-				String destSignerFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastSignerFile, localDestFileStr);
-				// add CI signer to upload list
-				CommUtil.writeStrToFile(tempFilePath, "cisigner=" + destSignerFileStr, true);
-				System.out.println("Download ci signer successfully!");
-			} catch (Exception e) {
-				System.out.println("Download ci signer failed!!!");
-			}
+			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "cisigner", Constants.CISigner_PREFIX);
 		}
 
 		if (Boolean.getBoolean("isNeedTAC")) {
-			try {
-				// get tac
-				String lastTacFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.TAC_PREFIX);
-				// // download tac from ftp to local
-				String destTacFileStr = CommUtil.ftpDownloadFiles(ftpClient, lastTacFile, localDestFileStr);
-				// add tac to upload list
-				CommUtil.writeStrToFile(tempFilePath, "tac=" + destTacFileStr, true);
-				System.out.println("Download tac successfully!");
-			} catch (Exception e) {
-				System.out.println("Download tac failed!!!");
-			}
+			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "tac", Constants.TAC_PREFIX);
 		}
+		
+		if (Boolean.getBoolean("isNeedStudio")) {
+			destStudioFileStr = CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, lastBuildRootFolder, tempFilePath, "studio", Constants.STUDIO_PREFIX);
+		}
+		
 		try {
 			// get SWTBotAll_p2
 			String lastSWTFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.SWT_PREFIX);
@@ -209,6 +142,7 @@ public class PrepareBuilds {
 			CommUtil.writeStrToFile(tempFilePath, "swtp2=" + p2SrcFileStr, true);
 			System.out.println("generate and upload swt p2 successfully!");
 		} catch (Exception e) {
+			CommUtil.writeStrToFile(tempFilePath, "swtp2=", true);
 			System.out.println("generate and upload swt p2 failed!!!");
 		}
 	}
