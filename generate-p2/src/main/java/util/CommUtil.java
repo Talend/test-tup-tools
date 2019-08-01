@@ -23,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
 import constant.Constants;
+import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileOutputStream;
@@ -623,12 +624,12 @@ public class CommUtil {
 	
 	public static boolean isFileExistedOnSambaServer(String fileStr) throws MalformedURLException, SmbException {
 		boolean isExisted = false;
-		String sambaDir = System.getProperty("sambaDir");
-		String sambaServer = System.getProperty("sambaServer");
-		String sambaUser = System.getProperty("sambaUser");
-		String sambaPasswd = System.getProperty("sambaPasswd");
-		String smbURL = "smb://" + sambaUser + ":" + sambaPasswd + "@" + sambaServer + sambaDir + File.separator + fileStr;
-		SmbFile samFile = new SmbFile(smbURL);
+		String sambaServer = System.getProperty("sambaServer", "192.168.33.241");
+		String sambaUser = System.getProperty("sambaUser", "automation");
+		String sambaPasswd = System.getProperty("sambaPasswd", "automation.com");
+		String smbURL = "smb://" + sambaServer + Constants.samba_dir_usedByJava + File.separator + fileStr;
+		NtlmPasswordAuthentication auth =  new NtlmPasswordAuthentication(sambaUser + ":" + sambaPasswd);
+		SmbFile samFile = new SmbFile(smbURL,auth);
 		isExisted = samFile.exists() && samFile.isFile();
 		return isExisted;
 	}

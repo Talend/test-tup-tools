@@ -26,4 +26,6 @@ public class Constants {
 	public final static String LICENSE_SUFFIX = ".license";
 	public final static String LICENSE_INSTUDIO = "license";
 	
+	public static final String samba_dir_usedByJava = "/talendqa/public/TUP_P2_builds";
+	
 }
