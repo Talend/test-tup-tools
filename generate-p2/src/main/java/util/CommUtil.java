@@ -546,7 +546,6 @@ public class CommUtil {
 			}
 		} catch (Exception e) {
 			System.err.println("Download " + fileStr + " failed!!!");
-			e.printStackTrace(System.err);
 		}
 		return destFileStr;
 	}
@@ -570,7 +569,6 @@ public class CommUtil {
 			}
 		} catch (Exception e) {
 			System.err.println("Download " + fileStr + "  failed!!!");
-			e.printStackTrace(System.err);
 		}
 		return destFileStr;
 	}
