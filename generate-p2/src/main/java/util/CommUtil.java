@@ -538,10 +538,11 @@ public class CommUtil {
 				
 				// add license to upload list
 				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
-				System.err.println("Download" + fileStr +" successfully!");
+				System.err.println("Download " + fileStr +" successfully!");
 			}
 		} catch (Exception e) {
-			System.err.println("Download" + fileStr + " failed!!!");
+			e.printStackTrace(System.err);
+			System.err.println("Download " + fileStr + " failed!!!");
 		}
 		return destFileStr;
 	}
@@ -559,10 +560,10 @@ public class CommUtil {
 				destFileStr = CommUtil.ftpDownloadFiles(ftpClient, latestFile, localDestFileStr);
 				// add studio to upload list
 				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
-				System.err.println("Download" + fileStr + " successfully!");
+				System.err.println("Download " + fileStr + " successfully!");
 			}
 		} catch (Exception e) {
-			System.err.println("Download" + fileStr + "  failed!!!");
+			System.err.println("Download " + fileStr + "  failed!!!");
 		}
 		return destFileStr;
 	}
