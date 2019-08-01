@@ -544,8 +544,8 @@ public class CommUtil {
 				System.err.println(fileStr +" exist, no need to download&upload again");
 			}
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
 			System.err.println("Download " + fileStr + " failed!!!");
+			e.printStackTrace(System.err);
 		}
 		return destFileStr;
 	}
@@ -569,6 +569,7 @@ public class CommUtil {
 			}
 		} catch (Exception e) {
 			System.err.println("Download " + fileStr + "  failed!!!");
+			e.printStackTrace(System.err);
 		}
 		return destFileStr;
 	}
