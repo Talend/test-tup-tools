@@ -61,9 +61,6 @@ public class PrepareBuilds {
 		System.err.println("latest build: " + lastBuildRootFolder);
 		localDestFileStr = localDestFileStr + File.separator + lastBuildRootFolder;
 		File localRootFile = new File(localDestFileStr);
-		if (localRootFile.exists()) {
-			CommUtil.deleteFolder(localDestFileStr);
-		}
 		localRootFile.mkdirs();
 		CommUtil.writeStrToFile(tempFilePath, "localDestFileStr=" + localDestFileStr, true);
 
