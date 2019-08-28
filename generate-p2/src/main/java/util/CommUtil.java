@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -354,8 +353,17 @@ public class CommUtil {
 	 */
 	public static String getLastStudioRootPath(List<String> listFiles) {
 		List<String> filelist = acceptContainFilter(listFiles, keyContains);
-		Collections.sort(filelist);
-		return filelist.get(filelist.size() - 1);
+		Collections.sort(filelist);		
+		List<String> timeStampList = new ArrayList<String>();
+		Map<String, String> timeStampMap = new HashMap<String, String>();
+		for (String fileName : filelist) {
+			String timeStamp = fileName.split("_", 2)[1];
+			timeStampList.add(timeStamp);
+			timeStampMap.put(timeStamp, fileName);
+		}
+		Collections.sort(timeStampList);		  
+		String lastStudioName=timeStampMap.get(timeStampList.get(timeStampList.size() - 1));	
+		return lastStudioName ;
 	}
 
 	public static List<String> acceptContainFilter(List<String> listFiles, String key) {
