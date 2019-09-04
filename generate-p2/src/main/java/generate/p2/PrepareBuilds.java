@@ -101,6 +101,7 @@ public class PrepareBuilds {
 			String studioWithP2NameStr = Constants.P2_PREFIX + studioFolderNameStr + ".zip";
 			System.err.println(studioWithP2NameStr + "!!!!!!!!!!!!!!!!!!! p2 name");
 			boolean isExisted = CommUtil.isFileExistedOnSambaServer(studioWithP2NameStr);
+			System.err.println("isExisted!!!!!!!!!!!!!!!!! " + isExisted);
 			if(isExisted) {
 				new Exception(studioWithP2NameStr + " already existed on samba server");
 			}
