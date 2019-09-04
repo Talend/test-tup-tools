@@ -99,11 +99,10 @@ public class PrepareBuilds {
 			String studioFolderStr = destStudioFileStr.replace(".zip", "");
 			String studioFolderNameStr = new File(studioFolderStr).getName();
 			String studioWithP2NameStr = Constants.P2_PREFIX + studioFolderNameStr + ".zip";
-			System.err.println(studioWithP2NameStr + "!!!!!!!!!!!!!!!!!!! p2 name");
 			boolean isExisted = CommUtil.isFileExistedOnSambaServer(studioWithP2NameStr);
-			System.err.println("isExisted!!!!!!!!!!!!!!!!! " + isExisted);
+			System.err.println("judge p2 if existed " + isExisted);
 			if(isExisted) {
-				new Exception(studioWithP2NameStr + " already existed on samba server");
+				throw new Exception(studioWithP2NameStr + " already existed on samba server");
 			}
 
 			// get SWTBotAll_p2
