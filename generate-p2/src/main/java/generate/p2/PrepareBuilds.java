@@ -96,6 +96,14 @@ public class PrepareBuilds {
 		}
 		
 		try {
+			String studioFolderStr = destStudioFileStr.replace(".zip", "");
+			String studioFolderNameStr = new File(studioFolderStr).getName();
+			String studioWithP2NameStr = Constants.P2_PREFIX + studioFolderNameStr + ".zip";
+			boolean isExisted = CommUtil.isFileExistedOnSambaServer(studioWithP2NameStr);
+			if(isExisted) {
+				new Exception(studioWithP2NameStr + " already existed on samba server");
+			}
+
 			// get SWTBotAll_p2
 			String lastSWTFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, Constants.SWT_PREFIX);
 			// download SWTBotAll_p2 from ftp to local and unzip
@@ -110,7 +118,6 @@ public class PrepareBuilds {
 			System.err.println("unzip studio done: " + destStudioFileStr);
 			// copy license to Studio
 			String licenseFolderStr = destLicenseFileStr.replace(".zip", "");
-			String studioFolderStr = destStudioFileStr.replace(".zip", "");
 			File licenseFile = CommUtil.getFilesWithStartEndFilter(new File(licenseFolderStr), licensePrefix, "");
 			CommUtil.copyBuild(licenseFile, studioFolderStr);
 			System.err.println("copy license to studio done");
@@ -126,12 +133,12 @@ public class PrepareBuilds {
 			}else {			
 				CommUtil.runCommand("cmd /c " + commandStr, null);
 			}
-			
 			System.err.println("generate p2 done");
+			
 			// zip SWT p2
 			File localDestFile = new File(localDestFileStr);
-			String studioFolderNameStr = new File(studioFolderStr).getName();
-			String zipCommStr = "jar -cMf " + Constants.P2_PREFIX + studioFolderNameStr + ".zip " + studioFolderNameStr.replace(".zip", "");
+			
+			String zipCommStr = "jar -cMf " + studioWithP2NameStr + " " + studioFolderNameStr.replace(".zip", "");
 			CommUtil.runCommand(zipCommStr, localDestFile);
 			System.err.println("zip p2 done");
 			String p2SrcFileStr = CommUtil.getFilesWithStartEndFilter(localDestFile, Constants.P2_PREFIX, "").getAbsolutePath();

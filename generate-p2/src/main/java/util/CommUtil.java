@@ -539,19 +539,13 @@ public class CommUtil {
 		try {
 			// get latest file
 			String latestFile = CommUtil.getLastLicenseFile(ftpClient, lastBuildRootFolder,keyString);
-			String fileNameStr = CommUtil.getFileName(latestFile);
-			boolean isExisted = CommUtil.isFileExistedOnSambaServer(fileNameStr);
-			if (!isExisted) {
 				
-				// download license from ftp to local and unzip
-				destFileStr = CommUtil.ftpDownloadFiles(ftpClient, latestFile, localDestFileStr);
-				
-				// add license to upload list
-				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
-				System.err.println("Download " + fileStr +" successfully!");
-			} else {
-				System.err.println(fileStr +" exist, no need to download&upload again");
-			}
+			// download license from ftp to local and unzip
+			destFileStr = CommUtil.ftpDownloadFiles(ftpClient, latestFile, localDestFileStr);
+			
+			// add license to upload list
+			CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
+			System.err.println("Download " + fileStr +" successfully!");
 		} catch (Exception e) {
 			System.err.println("Download " + fileStr + " failed!!!");
 		}
@@ -564,17 +558,11 @@ public class CommUtil {
 			// get file e.g. studio
 			String latestFile = CommUtil.getLastBuildFilterFile(ftpClient, lastBuildRootFolder, keyString);
 			
-			String fileNameStr = CommUtil.getFileName(latestFile);
-			boolean isExisted = CommUtil.isFileExistedOnSambaServer(fileNameStr);
-			if (!isExisted) {
-				// download studio from ftp to local and unzip
-				destFileStr = CommUtil.ftpDownloadFiles(ftpClient, latestFile, localDestFileStr);
-				// add studio to upload list
-				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
-				System.err.println("Download " + fileStr + " successfully!");
-			} else {
-				System.err.println(fileStr +" exist, no need to download&upload again");
-			}
+			// download studio from ftp to local and unzip
+			destFileStr = CommUtil.ftpDownloadFiles(ftpClient, latestFile, localDestFileStr);
+			// add studio to upload list
+			CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
+			System.err.println("Download " + fileStr + " successfully!");
 		} catch (Exception e) {
 			System.err.println("Download " + fileStr + "  failed!!!");
 		}

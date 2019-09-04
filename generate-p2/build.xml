@@ -38,13 +38,8 @@
 		<if>
 			<equals arg1="${isClearUpLocalFolder}" arg2="true" />
 		    <then>
-		    	<if>
-					<contains string="${swtp2}" substring="P2s-In" />
-					<then>
-				    	<delete dir="${localDestFileStr}" quiet="true" />
-				    	<echo>Delete ${localDestFileStr} successfully!!!</echo>
-					</then>
-				</if>
+		    	<delete dir="${localDestFileStr}" quiet="true" />
+		    	<echo>Delete ${localDestFileStr} successfully!!!</echo>
 			</then>
 		</if>
 		
