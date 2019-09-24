@@ -475,21 +475,21 @@ public class CommUtil {
 
 		List<String> buildList = new ArrayList<String>();
 		if (Constants.STUDIO_PREFIX.equals(buildType)) {
-			buildList = Arrays.asList(ftpClient.listNames(parentPath + "/" + Constants.ALL));// list : \\192.168.30.10\nightly\V7.3.1SNAPSHOT_20190723_1939\all
+			buildList = Arrays.asList(ftpClient.listNames(parentPath + "/" + Constants.ALL));
 			buildList = acceptStartWithFilterForPath(buildList, Constants.V_PREFIX);
-			buildList = Arrays.asList(ftpClient.listNames(buildList.get(0)));// list : \\192.168.30.10\nightly\V7.3.1SNAPSHOT_20190723_1939\all\V7.3.1SNAPSHOT
+			buildList = Arrays.asList(ftpClient.listNames(buildList.get(0)));
 			buildList = acceptContainFilter(buildList, Constants.SUBALL);
-			buildList = Arrays.asList(ftpClient.listNames(buildList.get(0)));// list : \\192.168.30.10\nightly\V7.3.1SNAPSHOT_20190723_1939\all\V7.3.1SNAPSHOT\all_731
+			buildList = Arrays.asList(ftpClient.listNames(buildList.get(0)));
 			buildList = acceptContainFilterForPath(buildList, Constants.V_PREFIX);
 			buildList = acceptContainFilterForPath(buildList, Constants.STUDIO_PREFIX);
 			buildList = acceptEndsWithFilterForPath(buildList, Constants.ZIP_SUFFIX);
 			buildPath = buildList.get(buildList.size() - 1);
 		} else if (Constants.TAC_PREFIX.equals(buildType)) {
-			buildList = Arrays.asList(ftpClient.listNames(parentPath + "/" + Constants.ALL));// list : \\192.168.30.10\nightly\V7.3.1SNAPSHOT_20190723_1939\all
+			buildList = Arrays.asList(ftpClient.listNames(parentPath + "/" + Constants.ALL));
 			buildList = acceptStartWithFilterForPath(buildList, Constants.V_PREFIX);
-			buildList = Arrays.asList(ftpClient.listNames(buildList.get(0)));// list : \\192.168.30.10\nightly\V7.3.1SNAPSHOT_20190723_1939\all\V7.3.1SNAPSHOT
+			buildList = Arrays.asList(ftpClient.listNames(buildList.get(0)));
 			buildList = acceptContainFilter(buildList, Constants.SUBALL);
-			buildList = Arrays.asList(ftpClient.listNames(buildList.get(0)));// list : \\192.168.30.10\nightly\V7.3.1SNAPSHOT_20190723_1939\all\V7.3.1SNAPSHOT\all_731
+			buildList = Arrays.asList(ftpClient.listNames(buildList.get(0)));
 			buildList = acceptContainFilterForPath(buildList, Constants.V_PREFIX);
 			buildList = acceptContainFilterForPath(buildList, Constants.TAC_PREFIX);
 			buildList = acceptEndsWithFilterForPath(buildList, Constants.ZIP_SUFFIX);
@@ -624,9 +624,9 @@ public class CommUtil {
 	
 	public static boolean isFileExistedOnSambaServer(String fileStr) throws MalformedURLException, SmbException {
 		boolean isExisted = false;
-		String sambaServer = System.getProperty("sambaServer", "192.168.33.241");
-		String sambaUser = System.getProperty("sambaUser", "automation");
-		String sambaPasswd = System.getProperty("sambaPasswd", "automation.com");
+		String sambaServer = System.getProperty("sambaServer");
+		String sambaUser = System.getProperty("sambaUser");
+		String sambaPasswd = System.getProperty("sambaPasswd");
 		String smbURL = "smb://" + sambaServer + Constants.samba_dir_usedByJava + File.separator + fileStr;
 		NtlmPasswordAuthentication auth =  new NtlmPasswordAuthentication(sambaUser + ":" + sambaPasswd);
 		SmbFile samFile = new SmbFile(smbURL,auth);
