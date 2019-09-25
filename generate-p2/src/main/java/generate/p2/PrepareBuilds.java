@@ -101,7 +101,8 @@ public class PrepareBuilds {
 			String studioWithP2NameStr = Constants.P2_PREFIX + studioFolderNameStr + ".zip";
 			boolean isExisted = CommUtil.isFileExistedOnSambaServer(studioWithP2NameStr);
 			if(isExisted) {
-				new Exception(studioWithP2NameStr + " already existed on samba server");
+				System.err.println("**** p2 existed will not generate again ****");
+				throw new Exception(studioWithP2NameStr + " already existed on samba server");
 			}
 
 			// get SWTBotAll_p2
