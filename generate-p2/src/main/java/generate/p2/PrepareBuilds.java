@@ -79,7 +79,7 @@ public class PrepareBuilds {
 			for(i=0;i<Constants.RVersion.length;i++) 
 			{
 			System.out.println(Constants.RVersion[i]);
-			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.RVersion[i], tempFilePath, "license",licenseKey);
+			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr, Constants.RVersion[i], tempFilePath, Constants.RVersion[i], licenseKey);
 			}
 		}
 		if (Boolean.getBoolean("isNeedfullP2")) {
