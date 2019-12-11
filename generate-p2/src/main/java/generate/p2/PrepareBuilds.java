@@ -73,11 +73,14 @@ public class PrepareBuilds {
 			String mixedLicenseKey = System.getProperty("mixedLicenseKey");
 			CommUtil.getAndDownloadLicense(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "mixedlicense", mixedLicenseKey);
 		}
-        if (Boolean.getBoolean("isNeedReleaseLicense")) {
-			String licenseKey = System.getProperty("licenseKey");				
-			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,"7.0.1", tempFilePath,"701license",licenseKey);
-			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,"7.1.1", tempFilePath,"711license",licenseKey);
-			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,"7.2.1", tempFilePath,"721license",licenseKey);		
+       	if (Boolean.getBoolean("isNeedReleaseLicense")) {
+			String licenseKey = System.getProperty("licenseKey");
+			int i;
+			for(i=0;i<Constants.RVersion.length;i++) 
+			{
+			System.out.println(Constants.RVersion[i]);
+			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.RVersion[i], tempFilePath, Constants.RVersion[i],licenseKey);
+			}
 		}
 		if (Boolean.getBoolean("isNeedfullP2")) {
 			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "fullP2", Constants.FullP2_PREFIX);

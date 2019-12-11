@@ -18,6 +18,15 @@
 			<param name="type" value="mixedlicense" />
 		</antcall>
 		<antcall target="uploadToServer">
+			<param name="type" value="Releaselicense701" />
+		</antcall>
+		<antcall target="uploadToServer">
+			<param name="type" value="Releaselicense711" />
+		</antcall>
+		<antcall target="uploadToServer">
+			<param name="type" value="Releaselicense721" />
+		</antcall>
+		<antcall target="uploadToServer">
 			<param name="type" value="studio" />
 		</antcall>
 		<antcall target="uploadToServer">
@@ -57,6 +66,24 @@
 			<equals arg1="${type}" arg2="mixedlicense" />
 			<then>
 				<var name="localfile" value="${mixedlicense}" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="Releaselicense701" />
+			<then>
+				<var name="localfile" value="7.0.1" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="Releaselicense711" />
+			<then>
+				<var name="localfile" value="7.1.1" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${type}" arg2="Releaselicense721" />
+			<then>
+				<var name="localfile" value="7.2.1" />
 			</then>
 		</if>
 		<if>
