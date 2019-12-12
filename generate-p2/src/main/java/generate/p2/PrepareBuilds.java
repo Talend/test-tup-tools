@@ -27,6 +27,42 @@ public class PrepareBuilds {
 	static String destStudioFileStr = "";
 	
 	public static void main(String[] args) throws IOException {
+		// add for debug
+		System.setProperty("keyContains", "V7.3.1");
+		System.setProperty("nightlyFolerStr", "\\\\192.168.30.10\\nightly");
+		System.setProperty("smbDestFolderStr", "\\\\192.168.33.241\\talendqa\\public\\TUP_P2_builds");
+		System.setProperty("sambaUser", "automation");
+		System.setProperty("sambaPasswd", "automation.com");
+		System.setProperty("sambaServer", "192.168.33.241");
+		System.setProperty("sambaDir", "/var/samba/talendqa/public/TUP_P2_builds");
+		System.setProperty("isNeedTAC", "false");
+		System.setProperty("isNeedStudio", "false");		
+		System.setProperty("isNeedLicense", "false");	
+		System.setProperty("isNeedfullP2", "false");	
+		System.setProperty("isNeedCIBuilder", "false");	
+		System.setProperty("isNeedCISigner", "false");	
+		System.setProperty("isNeed701License", "true");
+		System.setProperty("isNeed711License", "true");
+		System.setProperty("isNeed721License", "true");
+		System.setProperty("licenseKey", "30days_5users");	
+		System.setProperty("ftpServer", "192.168.30.10");
+		System.setProperty("ftpUserid", "anonymous");
+		System.setProperty("localDestFileStr", "d:/abc");
+		System.out.print("ftpServer="+System.getProperty("ftpServer"));
+				
+		localDestFileStr = System.getProperty("localDestFileStr");
+		licensePrefix = System.getProperty("licensePrefix");
+		smbDestFolderStr = System.getProperty("smbDestFolderStr");
+
+		ftpServer = System.getProperty("ftpServer");
+		ftpUserid = System.getProperty("ftpUserid");
+		ftpPassword = System.getProperty("ftpPassword");
+
+		sambaDir = System.getProperty("sambaDir");
+		sambaServer = System.getProperty("sambaServer");
+		sambaUser = System.getProperty("sambaUser");
+		sambaPasswd = System.getProperty("sambaPasswd");
+		// stop here
 		new PrepareBuilds().generatP2();
 	}
 
@@ -74,15 +110,15 @@ public class PrepareBuilds {
 		}
        	if (Boolean.getBoolean("isNeed701License")) {
 			String licenseKey = System.getProperty("licenseKey");
-			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.Releaselicense701, tempFilePath, Constants.Releaselicense701,licenseKey);
+			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.Releaselicense701, tempFilePath, "licenses_701",licenseKey);
 		}
     	if (Boolean.getBoolean("isNeed711License")) {
 			String licenseKey = System.getProperty("licenseKey");
-			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.Releaselicense711, tempFilePath, Constants.Releaselicense711,licenseKey);
+			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.Releaselicense711, tempFilePath, "licenses_711",licenseKey);
 		}
     	if (Boolean.getBoolean("isNeed721License")) {
 			String licenseKey = System.getProperty("licenseKey");
-			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.Releaselicense721, tempFilePath, Constants.Releaselicense721,licenseKey);
+			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.Releaselicense721, tempFilePath, "licenses_721",licenseKey);
 		}
 		if (Boolean.getBoolean("isNeedfullP2")) {
 			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "fullP2", Constants.FullP2_PREFIX);
