@@ -72,19 +72,19 @@
 		<if>
 			<equals arg1="${type}" arg2="701License" />
 			<then>
-				<var name="localfile" value="licenses_701" />
+				<var name="localfile" value="${licenses_701}" />
 			</then>
 		</if>
 		<if>
 			<equals arg1="${type}" arg2="711License" />
 			<then>
-				<var name="localfile" value="licenses_711" />
+				<var name="localfile" value="${licenses_711}" />
 			</then>
 		</if>
 		<if>
 			<equals arg1="${type}" arg2="721License" />
 			<then>
-				<var name="localfile" value="licenses_721" />
+				<var name="localfile" value="${licenses_721}" />
 			</then>
 		</if>
 		<if>
