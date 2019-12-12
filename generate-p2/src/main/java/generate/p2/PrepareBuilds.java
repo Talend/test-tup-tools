@@ -23,10 +23,9 @@ public class PrepareBuilds {
 	static String sambaServer = System.getProperty("sambaServer");
 	static String sambaUser = System.getProperty("sambaUser");
 	static String sambaPasswd = System.getProperty("sambaPasswd");
-
 	static String destLicenseFileStr = "";
 	static String destStudioFileStr = "";
-
+	
 	public static void main(String[] args) throws IOException {
 		new PrepareBuilds().generatP2();
 	}
@@ -73,14 +72,17 @@ public class PrepareBuilds {
 			String mixedLicenseKey = System.getProperty("mixedLicenseKey");
 			CommUtil.getAndDownloadLicense(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "mixedlicense", mixedLicenseKey);
 		}
-       	if (Boolean.getBoolean("isNeedReleaseLicense")) {
+       	if (Boolean.getBoolean("isNeed701License")) {
 			String licenseKey = System.getProperty("licenseKey");
-			int i;
-			for(i=0;i<Constants.RVersion.length;i++) 
-			{
-			System.out.println(Constants.RVersion[i]);
-			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.RVersion[i], tempFilePath, Constants.RVersion[i],licenseKey);
-			}
+			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.Releaselicense701, tempFilePath, Constants.Releaselicense701,licenseKey);
+		}
+    	if (Boolean.getBoolean("isNeed711License")) {
+			String licenseKey = System.getProperty("licenseKey");
+			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.Releaselicense711, tempFilePath, Constants.Releaselicense711,licenseKey);
+		}
+    	if (Boolean.getBoolean("isNeed721License")) {
+			String licenseKey = System.getProperty("licenseKey");
+			CommUtil.getAndDownloadReleaseLicense(ftpClient, localDestFileStr,Constants.Releaselicense721, tempFilePath, Constants.Releaselicense721,licenseKey);
 		}
 		if (Boolean.getBoolean("isNeedfullP2")) {
 			CommUtil.getAndDownloadOthers(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "fullP2", Constants.FullP2_PREFIX);

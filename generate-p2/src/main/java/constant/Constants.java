@@ -25,7 +25,9 @@ public class Constants {
 	public final static String LICENSE = "LICENSES";
 	public final static String LICENSE_SUFFIX = ".license";
 	public final static String LICENSE_INSTUDIO = "license";
-	public final static String RVersion[] = {"7.0.1","7.1.1","7.2.1"};
+	public final static String Releaselicense701="7.0.1";
+	public final static String Releaselicense711="7.1.1";
+	public final static String Releaselicense721="7.2.1";
 	public static final String samba_dir_usedByJava = "/talendqa/public/TUP_P2_builds";
 	
 }
