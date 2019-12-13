@@ -18,13 +18,13 @@
 			<param name="type" value="mixedlicense" />
 		</antcall>
 		<antcall target="uploadToServer">
-			<param name="type" value="${701License}" />
+			<param name="type" value="701License" />
 		</antcall>
 		<antcall target="uploadToServer">
-			<param name="type" value="${711License}" />
+			<param name="type" value="711License" />
 		</antcall>
 		<antcall target="uploadToServer">
-			<param name="type" value="${721License}" />
+			<param name="type" value="721License" />
 		</antcall>
 		<antcall target="uploadToServer">
 			<param name="type" value="studio" />
