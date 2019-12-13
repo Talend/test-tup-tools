@@ -678,5 +678,48 @@ public class CommUtil {
 			}
 		}
 	}
+	public static String getAndDownloadReleaseLicense(FTPClient ftpClient,String localDestFileStr,String version,
+			String tempFilePath, String fileStr, String keyString) {
+			String destFileStr = null;
+			try {
+				// get latest file
+				String latestFile = CommUtil.getLastLicenseFileForReleaseVersion(ftpClient, version, keyString);		
+				// download license from ftp to local and unzip
+				destFileStr = CommUtil.ftpDownloadFiles(ftpClient, latestFile, localDestFileStr);
+				// add license to upload list
+				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
+				System.err.println("Download " + fileStr + " successfully!");
+			} catch (Exception e) {
+				System.err.println("Download " + fileStr + " failed!!!");
+			}
+			return destFileStr;
+		}
+	/**
+	 * @param ftpClient
+	 * @param parentPath latest Build Root Folder
+	 * @return get latest license path for release versions.
+	 * @throws IOException
+	 * @author yhe
+	 */
+	public static String getLastLicenseFileForReleaseVersion(FTPClient ftpClient, String version, String keyString)
+			throws IOException {
 
+		if (!ftpClient.isConnected()) {
+			ftpClient.connect(ftpServer, 21);
+			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+			if (!ftpClient.login(ftpUserid, ftpPassword)) {
+				ftpClient.disconnect();
+				throw new IOException("Can't login to FTP server");
+			}
+		}
+		List<String> files = new ArrayList<String>();
+		String licensePath = "";
+		List<String> licenseList = new ArrayList<String>();
+		String licenseTempFolderStr = Constants.LICENSE_TEMP + "/" + version;
+		licenseList = Arrays.asList(ftpClient.listNames(licenseTempFolderStr));
+		licenseList = acceptContainFilter(licenseList, keyString);
+		Collections.sort(licenseList);
+		licensePath = licenseList.get(licenseList.size() - 1);
+		return licensePath;
+	}
 }
