@@ -2,7 +2,9 @@ package generate.p2;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -25,6 +27,7 @@ public class PrepareBuilds {
 	static String sambaPasswd = System.getProperty("sambaPasswd");
 	static String destLicenseFileStr = "";
 	static String destStudioFileStr = "";
+	public static List<String> tempAllCurrentVersionProduct = new ArrayList<String>();
 	
 	public static void main(String[] args) throws IOException {
 		new PrepareBuilds().generatP2();
@@ -55,6 +58,13 @@ public class PrepareBuilds {
 		ftpClient.enterLocalPassiveMode();
 		
 		List<String> listFiles = Arrays.asList(ftpClient.listNames());
+		for (String ss : listFiles) {
+			if (ss.contains(CommUtil.keyContains)) {
+				tempAllCurrentVersionProduct.add(ss);
+			}
+		}
+		Collections.reverse(tempAllCurrentVersionProduct);
+		
 		// get latest build root folder
 		String lastBuildRootFolder = CommUtil.getLastStudioRootPath(listFiles);
 		System.err.println("latest build: " + lastBuildRootFolder);
@@ -65,7 +75,7 @@ public class PrepareBuilds {
 
 		if (Boolean.getBoolean("isNeedLicense")) {
 			String licenseKey = System.getProperty("licenseKey");
-			destLicenseFileStr = CommUtil.getAndDownloadLicense(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "license",licenseKey);
+			destLicenseFileStr = CommUtil.specialGetAndDownloadLicense(ftpClient, lastBuildRootFolder, localDestFileStr, tempFilePath, "license",licenseKey);
 		}
 
 		if (Boolean.getBoolean("isNeedMixedLicense")) {
