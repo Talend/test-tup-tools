@@ -23,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
 import constant.Constants;
+import generate.p2.PrepareBuilds;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -31,7 +32,7 @@ import jcifs.smb.SmbFileOutputStream;
 public class CommUtil {
 
 	static String nightlyFolerStr = System.getProperty("nightlyFolerStr");
-	final static String keyContains = System.getProperty("keyContains");
+	public final static String keyContains = System.getProperty("keyContains");
 	public static String latstBuldRtFlderNm;
 	static String ftpServer = System.getProperty("ftpServer");
 	static String ftpUserid = System.getProperty("ftpUserid");
@@ -548,6 +549,31 @@ public class CommUtil {
 			System.err.println("Download " + fileStr +" successfully!");
 		} catch (Exception e) {
 			System.err.println("Download " + fileStr + " failed!!!");
+		}
+		return destFileStr;
+	}
+	
+	
+	public static String specialGetAndDownloadLicense(FTPClient ftpClient, String lastBuildRootFolder, String localDestFileStr, String tempFilePath, String fileStr, String keyString) {
+		String destFileStr = null;
+		for (int i = 0; i < PrepareBuilds.tempAllCurrentVersionProduct.size(); i++) {
+			if (destFileStr != null) {
+				break;
+			}
+			String currentProductRootFolder = PrepareBuilds.tempAllCurrentVersionProduct.get(i);
+			System.err.println("check license in this folder: " + currentProductRootFolder);
+			try {
+				// get latest file
+				String latestFile = CommUtil.getLastLicenseFile(ftpClient, currentProductRootFolder,keyString);
+				// download license from ftp to local and unzip
+				destFileStr = CommUtil.ftpDownloadFiles(ftpClient, latestFile, localDestFileStr);
+				System.err.println("the latest "+fileStr+": "+latestFile);
+				// add license to upload list
+				CommUtil.writeStrToFile(tempFilePath, fileStr + "=" + destFileStr, true);
+				System.err.println("Download " + fileStr +" successfully!");
+			} catch (Exception e) {
+				System.err.println("Download " + fileStr + " failed!!!");
+			}
 		}
 		return destFileStr;
 	}
