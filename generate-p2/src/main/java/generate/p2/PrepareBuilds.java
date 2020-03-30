@@ -29,6 +29,8 @@ public class PrepareBuilds {
 	static String destStudioFileStr = "";
 	public static List<String> tempAllCurrentVersionProduct = new ArrayList<String>();
 	
+	public static String specificVersion = System.getProperty("specificVersion");
+	
 	public static void main(String[] args) throws IOException {
 		new PrepareBuilds().generatP2();
 	}

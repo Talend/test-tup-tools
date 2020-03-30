@@ -362,8 +362,18 @@ public class CommUtil {
 			timeStampList.add(timeStamp);
 			timeStampMap.put(timeStamp, fileName);
 		}
-		Collections.sort(timeStampList);		  
-		String lastStudioName=timeStampMap.get(timeStampList.get(timeStampList.size() - 2));	
+		Collections.sort(timeStampList);
+		String lastStudioName= null;
+		if (PrepareBuilds.specificVersion != null && PrepareBuilds.specificVersion.length() > 1) {
+			for (int i = 0; i < listFiles.size(); i++) {
+				if (listFiles.get(i).contains(PrepareBuilds.specificVersion)) {
+					lastStudioName=listFiles.get(i);
+					break;
+				}
+			}
+		} else {
+			lastStudioName=timeStampMap.get(timeStampList.get(timeStampList.size() - 1));	
+		}
 		return lastStudioName ;
 	}
 
