@@ -229,6 +229,7 @@ public class CommUtil {
 
 	public static String getLatestStrAfterSort(List<String> list) {
 		int size = list.size();
+		System.out.println("getLatestStrAfterSort="+list);
 		Collections.sort(list);
 		
 		return size==1?list.get(0):list.get(size - 1);
