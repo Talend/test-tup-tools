@@ -230,7 +230,8 @@ public class CommUtil {
 	public static String getLatestStrAfterSort(List<String> list) {
 		int size = list.size();
 		Collections.sort(list);
-		return list.get(size - 1);
+		
+		return size==1?list.get(0):list.get(size - 1);
 	}
 
 	public static File getLatestFilAfterSort(List<File> list) {
