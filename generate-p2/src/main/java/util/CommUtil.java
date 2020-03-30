@@ -363,7 +363,7 @@ public class CommUtil {
 			timeStampMap.put(timeStamp, fileName);
 		}
 		Collections.sort(timeStampList);		  
-		String lastStudioName=timeStampMap.get(timeStampList.get(timeStampList.size() - 1));	
+		String lastStudioName=timeStampMap.get(timeStampList.get(timeStampList.size() - 2));	
 		return lastStudioName ;
 	}
 
