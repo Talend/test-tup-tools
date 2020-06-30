@@ -42,8 +42,14 @@
 			<param name="type" value="tac" />
 		</antcall>
 		<echo>!!!!!!!! Start to upload p2, if there no p2, will throw FileNotFoundException !!!!!!</echo>
-		<scp file="${swtp2}" todir="${sambaUser}:${sambaPasswd}@${sambaServer}:${sambaDir}" trust="true" />
-		
+		<trycatch>
+			<try>
+				<scp file="${swtp2}" todir="${sambaUser}:${sambaPasswd}@${sambaServer}:${sambaDir}" trust="true" />
+			</try>
+			<catch>
+				<echo>!!!!!!!! Upload p2 fail !!!!!!!!</echo>
+			</catch>
+		</trycatch>
 		<if>
 			<equals arg1="${isClearUpLocalFolder}" arg2="true" />
 		    <then>
