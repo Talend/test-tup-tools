@@ -2,6 +2,8 @@ package generate.p2;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -117,10 +119,12 @@ public class PrepareBuilds {
 		}
 		
 		try {
+			System.err.println("download builds done, start to generate P2-STUDIO");
 			String studioFolderStr = destStudioFileStr.replace(".zip", "");
 			String studioFolderNameStr = new File(studioFolderStr).getName();
 			String studioWithP2NameStr = Constants.P2_PREFIX + studioFolderNameStr + ".zip";
 			boolean isExisted = CommUtil.isFileExistedOnSambaServer(studioWithP2NameStr);
+			System.err.println("isFileExistedOnSambaServer="+isExisted+",studioWithP2NameStr="+studioWithP2NameStr);
 			if(isExisted) {
 				System.err.println("**** p2 existed will not generate again ****");
 				throw new Exception(studioWithP2NameStr + " already existed on samba server");
@@ -168,8 +172,12 @@ public class PrepareBuilds {
 			CommUtil.writeStrToFile(tempFilePath, "swtp2=" + p2SrcFileStr, true);
 			System.out.println("generate and upload swt p2 successfully!");
 		} catch (Exception e) {
+			e.printStackTrace();
 			CommUtil.writeStrToFile(tempFilePath, "swtp2=", true);
 			System.out.println("generate and upload swt p2 failed!!!");
-		}
+		} finally {
+			System.out.println("print all test builds="+tempFilePath);
+			System.out.println(Files.readAllBytes(Paths.get(tempFilePath)));
+		}	
 	}
 }
