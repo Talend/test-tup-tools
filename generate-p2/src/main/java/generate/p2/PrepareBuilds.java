@@ -177,7 +177,7 @@ public class PrepareBuilds {
 			System.out.println("generate and upload swt p2 failed!!!");
 		} finally {
 			System.out.println("print all test builds="+tempFilePath);
-			System.out.println(Files.readAllBytes(Paths.get(tempFilePath)));
+			System.out.println(Files.readAllBytes(Paths.get(tempFilePath)).toString());
 		}	
 	}
 }
