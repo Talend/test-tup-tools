@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
 import constant.Constants;
@@ -74,6 +75,8 @@ public class PrepareBuilds {
 		System.err.println("latest build: " + lastBuildRootFolder);
 		localDestFileStr = localDestFileStr + File.separator + lastBuildRootFolder;
 		File localRootFile = new File(localDestFileStr);
+		// clean workspace before generate test-build
+		FileUtils.deleteDirectory(localRootFile);
 		localRootFile.mkdirs();
 		CommUtil.writeStrToFile(tempFilePath, "localDestFileStr=" + localDestFileStr, true);
 
