@@ -581,7 +581,7 @@ public class CommUtil {
 				break;
 			}
 			String currentProductRootFolder = PrepareBuilds.tempAllCurrentVersionProduct.get(i);
-			System.err.println("check license in this folder: " + currentProductRootFolder);
+			System.err.println("check product in this folder: " + currentProductRootFolder);
 			try {
 				// get latest file
 				String latestFile = CommUtil.getLastLicenseFile(ftpClient, currentProductRootFolder,keyString);
