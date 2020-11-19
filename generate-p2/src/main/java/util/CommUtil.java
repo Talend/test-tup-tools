@@ -448,11 +448,21 @@ public class CommUtil {
 				throw new IOException("Can't login to FTP server");
 			}
 		}
+		boolean isLicenseInProductFolder = false;
 		List<String> files = new ArrayList<String>();
 		String licensePath = "";
 		List<String> licenseList = new ArrayList<String>();
-		files = Arrays.asList(ftpClient.listNames(parentPath));
-		if (files.toString().contains(Constants.LICENSE)) {
+		for (int i = 0; i < PrepareBuilds.tempAllCurrentVersionProduct.size(); i++) {
+			parentPath = PrepareBuilds.tempAllCurrentVersionProduct.get(i);
+			System.err.println("check license in this folder: " + parentPath);
+			files = Arrays.asList(ftpClient.listNames(parentPath));
+			isLicenseInProductFolder = files.toString().contains(Constants.LICENSE);
+			if (isLicenseInProductFolder) {
+				break;
+			}
+		}
+		
+		if (isLicenseInProductFolder) {
 			licenseList = Arrays.asList(ftpClient.listNames(parentPath + "/" + Constants.LICENSE));
 			licenseList = acceptContainFilter(licenseList, keyString);
 			licensePath = licenseList.get(licenseList.size() - 1);
