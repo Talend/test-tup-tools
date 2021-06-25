@@ -41,6 +41,7 @@
 		<antcall target="uploadToServer">
 			<param name="type" value="tac" />
 		</antcall>
+		<!-- 
 		<echo>!!!!!!!! Start to upload p2, if there no p2, will throw FileNotFoundException !!!!!!</echo>
 		<scp file="${swtp2}" todir="${sambaUser}:${sambaPasswd}@${sambaServer}:${sambaDir}" trust="true" />
 		<if>
@@ -50,7 +51,7 @@
 		    	<echo>Delete ${localDestFileStr} successfully!!!</echo>
 			</then>
 		</if>
-		
+		-->
 	</target>
 
 
